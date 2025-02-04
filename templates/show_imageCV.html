@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Processing</title>
+    <link rel="stylesheet" href="{{url_for('static',filename = 'css/style.css')}}">
+</head>
+<body>
+    <h1>Original Image</h1>
+    <img src="{{ url_for('static', filename='images/' + filename) }}" alt="Uploaded Image" width="300">
+
+    <h2>Apply Filters</h2>
+    <div>
+      <a href="{{ url_for('apply_filter', filter_type='grayscale', filename=filename) }}"><button>Grayscale</button></a> |
+      <a href="{{ url_for('apply_filter', filter_type='blur', filename=filename) }}"><button>Blur</button></a> |
+      <a href="{{ url_for('apply_filter', filter_type='edge', filename=filename) }}"><button>Edge Detection</button></a> |
+      <a href="{{ url_for('apply_filter', filter_type='pixelate', filename=filename) }}"><button>Pixelate</button></a> |
+      <a href="{{ url_for('apply_filter', filter_type='cartoon', filename=filename) }}"><button>Cartoon</button></a> |
+      <a href="{{ url_for('apply_filter', filter_type='oil painting', filename=filename) }}"><button>Oil Painting</button></a> |
+      <a href="{{ url_for('apply_filter', filter_type='sepia', filename=filename) }}"><button>Sepia</button></a> |
+      <a href="{{ url_for('apply_filter', filter_type='emboss', filename=filename) }}"><button>Emboss</button></a> |
+      <a href="{{ url_for('apply_filter', filter_type='invert', filename=filename) }}"><button>Invert</button></a>
+    </div>
+
+    {% if filtered_filename %}
+        <h1>Filtered Image</h1>
+        <img src="{{ url_for('static', filename=filtered_filename) }}" alt="Filtered Image" width="300">
+        <a href="{{ url_for('download_img', filename=filtered_filename) }}"><button>Download</button></a>
+    {% endif %}
+</body>
+</html>

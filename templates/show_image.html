@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manipulate Image</title>
+</head>
+<body>
+    <h1>Image Uploaded</h1>
+    <img src="{{ url_for('static', filename='images/' + filename) }}" alt="Uploaded Image">
+    <br>
+    <h2>Apply Filters</h2>
+    <a href="{{ url_for('apply_filter', filter_type='grayscale', filename=filename) }}">Grayscale</a>
+    <a href="{{ url_for('apply_filter', filter_type='blur', filename=filename) }}">Blur</a>
+    <a href="{{ url_for('apply_filter', filter_type='pixelate', filename=filename) }}">Pixelate</a>
+
+    {% if filtered_filename %}
+      <h1>Filtered Image</h1>
+      <img src="{{ url_for('static', filename=filtered_filename) }}" alt="Filtered Image" width="300">
+    {% endif %}
+</body>
+</html>
