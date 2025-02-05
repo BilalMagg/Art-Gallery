@@ -1,0 +1,11 @@
+**/__pycache__/
+
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+venv/
+.venv/
+
+Apps/image manipulation/static/filtered/
+Apps/image manipulation/static/images/
