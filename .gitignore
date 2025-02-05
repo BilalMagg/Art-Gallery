@@ -7,5 +7,7 @@
 venv/
 .venv/
 
-Apps/image manipulation/static/filtered/
-Apps/image manipulation/static/images/
+Apps/image_manipulation/static/filtered/
+Apps/image_manipulation/static/images/
+
+static/filtered/
