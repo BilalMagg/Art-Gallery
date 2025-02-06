@@ -62,6 +62,7 @@
 
                 <div class="tool-card upload-card">
                     <h2>Upload Image</h2>
+                    <p>You can upload your image here</p>
                     <form action="{{ url_for('images.upload_image') }}" method="POST" enctype="multipart/form-data" class="upload-form">
                         <div class="file-input-wrapper">
                             <input type="file" name="image" id="file-input" required>
@@ -79,6 +80,17 @@
                 </div>
             </div>
         </main>
+        <footer>
+            <div class="hero-graphics">
+                <div class="graphics-grid">
+                    <div class="graphic-item purple"></div>
+                    <div class="graphic-item blue"></div>
+                    <div class="graphic-item green"></div>
+                    <div class="graphic-item yellow"></div>
+                    <div class="graphic-item red"></div>
+                </div>
+            </div>
+        </footer>
     </div>
 </body>
 </html>

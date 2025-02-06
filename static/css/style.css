@@ -64,11 +64,14 @@ nav {
 .nav-links a {
   text-decoration: none;
   color: var(--gray-600);
-  transition: color 0.2s;
+  transition: all 0.2s;
+  border-bottom: 2px solid white;
 }
 
 .nav-links a:hover {
   color: var(--gray-900);
+  border-bottom: 2px solid black;
+  /* text-decoration: underline; */
 }
 
 .nav-icons {
@@ -181,6 +184,7 @@ h1 {
   background: linear-gradient(to bottom right, #f3e8ff, #d8b4fe);
 }
 
+
 .blue {
   background: linear-gradient(to bottom right, #e0f2fe, #7dd3fc);
 }
@@ -191,6 +195,10 @@ h1 {
 
 .yellow {
   background: linear-gradient(to bottom right, #fef9c3, #fde047);
+}
+
+.black {
+  background: linear-gradient(to bottom right, #2b2531, #111827);
 }
 
 /* Social Links */

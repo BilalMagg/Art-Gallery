@@ -120,9 +120,9 @@
                 <div class="image-box filtered">
                     <h2>Filtered Image</h2>
                     <div class="image-container">
-                        <img src="{{ url_for('images.static', filename=filtered_filename) }}" alt="Filtered Image">
+                        <img src="{{ url_for('images.static', filename= 'filtered/' + filtered_filename) }}" alt="Filtered Image">
                     </div>
-                    <a href="{{ url_for('images.download_img', filename=filtered_filename) }}" class="btn primary">Download</a>
+                    <a href="{{ url_for('images.download_img', filename= filtered_filename) }}" class="btn primary download-btn">Download</a>
                 </div>
                 {% else %}
                 <div class="image-box result">
