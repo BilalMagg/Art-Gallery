@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ancient Temple 3D</title>
+
+    <!-- External Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_temple.css') }}">
+
+    <!-- Load Three.js -->
+     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js"></script>
+    
+</head>
+<body>
+
+    <div class="content">
+        <h1>Welcome to the Ancient Temple</h1>
+        <p>Explore this floating 3D temple. Use your mouse to rotate and zoom in.</p>
+        <p>This temple is an artistic representation of ancient architecture, crafted to give a stunning visualization.</p>
+        <p>Interact with it to experience the beauty of history in a modern, digital form.</p>
+    </div>
+
+    <div class="model-container">
+        <canvas id="threejs-canvas"></canvas>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main_temple.js') }}"></script>
+</body>
+</html>
