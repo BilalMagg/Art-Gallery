@@ -1,34 +1,35 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for, send_file, Blueprint
 import os,sys
 import cv2
 # sys.path.append(os.path.abspath('../openCV'))
-from openCV import grayscale, blur, edge_detection,pixelation,cartoon,oil_painting,emboss,invert,sepia
+from .openCV import grayscale, blur, edge_detection,pixelation,cartoon,oil_painting,emboss,invert,sepia
 import numpy as np
 
-app = Flask(__name__)
+# app = Flask(__name__)
+image_bp = Blueprint("images", __name__, template_folder="templates",static_folder="static")
 
 os.makedirs('static/images',exist_ok= True)
 os.makedirs('static/filtered',exist_ok= True)
 
-@app.route('/')
+@image_bp.route('/')
 def index():
   return render_template('indexCV.html')
 
-@app.route('/upload_image',methods=['POST'])
+@image_bp.route('/upload_image',methods=['POST'])
 def upload_image():
   if 'image' in request.files:
         img_file = request.files['image']
         if img_file:
             file_path = os.path.join('static/images', img_file.filename)
             img_file.save(file_path)
-            return redirect(url_for('show_image', filename=img_file.filename))
+            return redirect(url_for('images.show_image', filename=img_file.filename))
   return redirect(url_for('index'))
 
-@app.route('/image/<filename>')
+@image_bp.route('/image/<filename>')
 def show_image(filename):
   return render_template('show_imageCV.html',filename = filename)
 
-@app.route('/apply_filter/<filter_type>/<filename>')
+@image_bp.route('/apply_filter/<filter_type>/<filename>')
 def apply_filter(filter_type,filename):
     input_path = os.path.join('static/images',filename)
     output_path = os.path.join('static/filtered',f"{filter_type}_{filename}")
@@ -61,7 +62,7 @@ def apply_filter(filter_type,filename):
 
     return render_template('show_imageCV.html',filename=filename,filtered_filename=f"filtered/{filter_type}_{filename}")
 
-@app.route('/download/<filename>')
+@image_bp.route('/download/<filename>')
 def download_img(filename):
     file_path = os.path.join('static/filtered',filename)
 
@@ -70,5 +71,5 @@ def download_img(filename):
     
     return send_file(file_path, as_attachment = True)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     image_bp.run(debug=True)
