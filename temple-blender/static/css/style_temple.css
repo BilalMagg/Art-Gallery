@@ -1,0 +1,41 @@
+body { 
+    margin: 0; 
+    overflow: hidden; 
+    background-color: #1a1a1a; 
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh; /* Ensure it takes the full viewport height */
+    width: 100vw; /* Full viewport width */
+}
+
+.content {
+    width: 40%;
+    padding: 30px;
+    color: white;
+}
+
+.content h1 {
+    font-size: 28px;
+}
+
+.content p {
+    font-size: 18px;
+    opacity: 0.8;
+    line-height: 1.5;
+}
+
+.model-container {
+    width: 60%;
+    height: 100vh; /* Make it full height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+canvas {
+    width: 100% !important; /* Ensures full width */
+    height: 100% !important; /* Ensures full height */
+    max-width: none; /* Removes restrictions */
+    max-height: none; /* Removes restrictions */
+}
