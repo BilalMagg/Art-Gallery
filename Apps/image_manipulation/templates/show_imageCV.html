@@ -1,25 +1,16 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Image Processing</title>
-<<<<<<< HEAD
-    <link rel="stylesheet" href="{{url_for('static',filename = 'css/style.css')}}">
-=======
     <link rel="stylesheet" href="{{url_for('images.static',filename = 'css/style.css')}}">
->>>>>>> 11b51c5ae59c4a66a7bd35145eecf36965d0294f
 </head>
 <body>
     <section>
         <div class="boxes">
             <h1>Original Image</h1>
-<<<<<<< HEAD
-            <img src="{{ url_for('static', filename='images/' + filename) }}" alt="Uploaded Image" width="300">
-            <form class=form2 action="/upload_image" method="POST" enctype="multipart/form-data">
-=======
             <img src="{{ url_for('images.static', filename='images/' + filename) }}" alt="Uploaded Image" width="300">
             <form class=form2 action="{{ url_for('images.upload_image') }}" method="POST" enctype="multipart/form-data">
->>>>>>> 11b51c5ae59c4a66a7bd35145eecf36965d0294f
                 <label for="file-input" class="label-choose">Choose file</label>
                 <input type="file" name="image" id="file-input" required>
                 <button type="submit">Upload</button>
@@ -28,17 +19,6 @@
         <div class="boxes">
             <h2>Apply Filters</h2>
             <div class="filters-btn">
-<<<<<<< HEAD
-                <a href="{{ url_for('apply_filter', filter_type='grayscale', filename=filename) }}"><button class="btn-filter">Grayscale</button></a> 
-                <a href="{{ url_for('apply_filter', filter_type='blur', filename=filename) }}"><button class="btn-filter">Blur</button></a> 
-                <a href="{{ url_for('apply_filter', filter_type='edge', filename=filename) }}"><button class="btn-filter">Edge Detection</button></a> 
-                <a href="{{ url_for('apply_filter', filter_type='pixelate', filename=filename) }}"><button class="btn-filter">Pixelate</button></a> 
-                <a href="{{ url_for('apply_filter', filter_type='cartoon', filename=filename) }}"><button class="btn-filter">Cartoon</button></a> 
-                <a href="{{ url_for('apply_filter', filter_type='oil painting', filename=filename) }}"><button class="btn-filter">Oil Painting</button></a> 
-                <a href="{{ url_for('apply_filter', filter_type='sepia', filename=filename) }}"><button class="btn-filter">Sepia</button></a> 
-                <a href="{{ url_for('apply_filter', filter_type='emboss', filename=filename) }}"><button class="btn-filter">Emboss</button></a> 
-                <a href="{{ url_for('apply_filter', filter_type='invert', filename=filename) }}"><button class="btn-filter">Invert</button></a>
-=======
                 <a href="{{ url_for('images.apply_filter', filter_type='grayscale', filename=filename) }}"><button class="btn-filter">Grayscale</button></a> 
                 <a href="{{ url_for('images.apply_filter', filter_type='blur', filename=filename) }}"><button class="btn-filter">Blur</button></a> 
                 <a href="{{ url_for('images.apply_filter', filter_type='edge', filename=filename) }}"><button class="btn-filter">Edge Detection</button></a> 
@@ -48,7 +28,6 @@
                 <a href="{{ url_for('images.apply_filter', filter_type='sepia', filename=filename) }}"><button class="btn-filter">Sepia</button></a> 
                 <a href="{{ url_for('images.apply_filter', filter_type='emboss', filename=filename) }}"><button class="btn-filter">Emboss</button></a> 
                 <a href="{{ url_for('images.apply_filter', filter_type='invert', filename=filename) }}"><button class="btn-filter">Invert</button></a>
->>>>>>> 11b51c5ae59c4a66a7bd35145eecf36965d0294f
             </div>
         </div>
 
@@ -56,15 +35,9 @@
         {% if filtered_filename %}
             <div class="boxes">
                 <h1>Filtered Image</h1>
-<<<<<<< HEAD
-                <img src="{{ url_for('static', filename=filtered_filename) }}" alt="Filtered Image" width="300">
-                <div class="download-btn2">
-                    <a href="{{ url_for('download_img', filename=filtered_filename) }}"><button>Download</button></a>
-=======
                 <img src="{{ url_for('images.static', filename=filtered_filename) }}" alt="Filtered Image" width="300">
                 <div class="download-btn2">
                     <a href="{{ url_for('images.download_img', filename=filtered_filename) }}"><button>Download</button></a>
->>>>>>> 11b51c5ae59c4a66a7bd35145eecf36965d0294f
                 </div>
             </div>
         {% else %}
@@ -78,6 +51,94 @@
                 </ol>
             </div>
         {% endif %}
-    </section>
+    </section> 
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processing</title>
+    <link rel="stylesheet" href="{{url_for('images.static',filename = 'css/style.css')}}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <div class="logo">
+                    <svg viewBox="0 0 24 24" class="logo-icon">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                    </svg>
+                    <span>Art Gallery</span>
+                </div>
+        
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href='/shapes'>Shapes</a>
+                    <a href='/visualization'>Data</a>
+                    <a href='/images'>Images</a>
+                    <a href='/audio'>Audio</a>
+                    <a href='/ml'>ML</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="image-processing">
+            <div class="processing-grid">
+                <div class="image-box original">
+                    <h2>Original Image</h2>
+                    <div class="image-container">
+                        <img src="{{ url_for('images.static', filename='images/'+filename ) }}" alt="Original Image">
+                    </div>
+                    <form action="{{ url_for('images.upload_image') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+                        <div class="file-input-wrapper">
+                            <input type="file" name="image" id="file-input" required>
+                            <label for="file-input" class="file-label">Choose File</label>
+                        </div>
+                        <button type="submit" class="btn primary">Upload</button>
+                    </form>
+                </div>
+
+                <div class="filters-box">
+                    <h2>Apply Filters</h2>
+                    <div class="filters-grid">
+                        <a href="{{ url_for('images.apply_filter', filter_type='grayscale', filename=filename) }}" class="filter-btn">Grayscale</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='blur', filename=filename) }}" class="filter-btn">Blur</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='edge', filename=filename) }}" class="filter-btn">Edge Detection</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='pixelate', filename=filename) }}" class="filter-btn">Pixelate</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='cartoon', filename=filename) }}" class="filter-btn">Cartoon</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='oil painting', filename=filename) }}" class="filter-btn">Oil Painting</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='sepia', filename=filename) }}" class="filter-btn">Sepia</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='emboss', filename=filename) }}" class="filter-btn">Emboss</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='invert', filename=filename) }}" class="filter-btn">Invert</a>
+                    </div>
+                </div>
+
+                {% if filtered_filename %}
+                <div class="image-box filtered">
+                    <h2>Filtered Image</h2>
+                    <div class="image-container">
+                        <img src="{{ url_for('images.static', filename=filtered_filename) }}" alt="Filtered Image">
+                    </div>
+                    <a href="{{ url_for('images.download_img', filename=filtered_filename) }}" class="btn primary">Download</a>
+                </div>
+                {% else %}
+                <div class="image-box result">
+                    <h2>Result</h2>
+                    <div class="instructions">
+                        <ol>
+                            <li>Choose a file</li>
+                            <li>Upload the image</li>
+                            <li>Choose an effect</li>
+                            <li>The result will be shown here</li>
+                        </ol>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
 </body>
 </html>
