@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Globe Visualization</title>
+</head>
+<body>
+    <h1>3D Globe Visualization</h1>
+    <form action="/" method="post" enctype="multipart/form-data">
+        <label for="file">Upload CSV File:</label>
+        <input type="file" name="file" required>
+        
+        <label for="color_scale">Select Color Scale:</label>
+        <select name="color_scale">
+            <option value="greens">Greens</option>
+            <option value="blues">Blues</option>
+            <option value="reds">Reds</option>
+        </select>
+
+        <button type="submit">Generate Graph</button>
+    </form>
+
+    {% if graph_html %}
+        <h2>Visualization:</h2>
+        {{ graph_html|safe }}
+    {% endif %}
+</body>
+</html>
