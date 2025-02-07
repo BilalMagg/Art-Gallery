@@ -1,11 +1,11 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, Blueprint
 
-app = Flask(__name__)
+# app = Flask(__name__)
+shapes_bp = Blueprint("shapes",__name__,template_folder="templates",static_folder="static")
 
-@app.route("/")
+@shapes_bp.route("/")
 def home():
-    # This will load templates/index.html
-    return render_template("index.html")
+    return render_template("index_shape.html")
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
