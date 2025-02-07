@@ -1,24 +1,26 @@
-from flask import Flask, Response, request, render_template, jsonify
+from flask import Flask, Response, request, render_template, jsonify, Blueprint
 from pydub import AudioSegment
 from pydub.effects import low_pass_filter, high_pass_filter
 import io
 
-app = Flask(__name__, template_folder="templates", static_folder="static")
+# app = Flask(__name__, template_folder="templates", static_folder="static")
+audio_bp = Blueprint('audios',__name__,template_folder="templates",static_folder="static")
 
 # Store references to the uploaded audio segments
 base_audio = None
 overlay_audio = None
 
-@app.route("/")
+@audio_bp.route("/")
 def home():
     return render_template("index-audio.html")
 
 # --------------------------------------------------
 #                  Upload Endpoints
 # --------------------------------------------------
-@app.route("/upload", methods=["POST"])
+@audio_bp.route("/upload", methods=["POST"])
 def upload_file():
     """Upload the base audio."""
+    print('Upload')
     global base_audio
     file = request.files.get("file")
 
@@ -32,7 +34,7 @@ def upload_file():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
 
-@app.route("/upload-overlay", methods=["POST"])
+@audio_bp.route("/upload-overlay", methods=["POST"])
 def upload_overlay():
     """Upload the overlay audio."""
     global overlay_audio
@@ -51,7 +53,7 @@ def upload_overlay():
 # --------------------------------------------------
 #                  Basic Playback
 # --------------------------------------------------
-@app.route("/play-audio")
+@audio_bp.route("/play-audio")
 def play_audio():
     """Return the base audio as MP3."""
     global base_audio
@@ -66,7 +68,7 @@ def play_audio():
 # --------------------------------------------------
 #                  Filters
 # --------------------------------------------------
-@app.route("/filter/reverse")
+@audio_bp.route("/filter/reverse")
 def filter_reverse():
     """Reverse the base audio."""
     global base_audio
@@ -83,7 +85,7 @@ def filter_reverse():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
 
-@app.route("/filter/bass")
+@audio_bp.route("/filter/bass")
 def filter_bass():
     """Apply a simple bass boost: 
        1) Low-pass filter to isolate low frequencies
@@ -109,7 +111,7 @@ def filter_bass():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
 
-@app.route("/filter/treble")
+@audio_bp.route("/filter/treble")
 def filter_treble():
     """Apply a simple treble boost:
        1) High-pass filter to isolate high frequencies
@@ -135,7 +137,7 @@ def filter_treble():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
 
-@app.route("/filter/echo")
+@audio_bp.route("/filter/echo")
 def filter_echo():
     """Apply a simple echo effect:
        - We'll overlay repeated, attenuated copies of the track with some delay.
@@ -161,7 +163,7 @@ def filter_echo():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
 
-@app.route("/filter/overlay")
+@audio_bp.route("/filter/overlay")
 def apply_overlay():
     """Overlay the second audio (overlay_audio) on top of base_audio."""
     global base_audio, overlay_audio
@@ -180,5 +182,5 @@ def apply_overlay():
 # --------------------------------------------------
 #                Run the Flask App
 # --------------------------------------------------
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)

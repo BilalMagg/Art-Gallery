@@ -1,49 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Audio Editor</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style-audio.css') }}">
-  <script src="{{ url_for('static', filename='script-audio.js') }}" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Editor - Greek Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('audios.static', filename='style-audio.css') }}">
+    <script src="{{ url_for('audios.static', filename='script-audio.js') }}" defer></script>
 </head>
 <body>
-  <h1>🎵 Audio Editor</h1>
+    <div class="greek-pattern-top"></div>
+    <div class="container">
+        <header>
+            <nav>
+                <div class="logo">
+                    <svg viewBox="0 0 24 24" class="logo-icon">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                    </svg>
+                    <span>Grecian Gallery</span>
+                </div>
+                
+                <div class="nav-links">
+                    <a href='/shapes'>Shapes</a>
+                    <a href='/visualization'>Data</a>
+                    <a href='/images'>Images</a>
+                    <a href='/audio'>Audio</a>
+                    <a href='/ml'>ML</a>
+                </div>
+            </nav>
+        </header>
 
-  <!-- Upload Base Audio -->
-  <section>
-    <h2>📂 Upload Base Audio</h2>
-    <form id="uploadFormBase">
-      <input type="file" id="baseFile" name="file" accept="audio/*" required>
-      <button type="submit">Upload Base Audio</button>
-    </form>
-  </section>
+        <main class="audio-editor">
+            <h1 class="greek-title">Audio Editor</h1>
+            <div class="editor-grid">
+                <div class="editor-card greek-card upload-section">
+                    <div class="card-header">
+                        <h2>📂 Upload Base Audio</h2>
+                    </div>
+                    <form id="uploadFormBase" class="upload-form">
+                        <div class="file-input-wrapper">
+                            <input type="file" id="baseFile" name="file" accept="audio/*" required>
+                            <label for="baseFile" class="file-label">Choose File</label>
+                        </div>
+                        <button type="submit" class="btn primary">Upload Base Audio</button>
+                    </form>
+                </div>
 
-  <!-- Filter Buttons -->
-  <section>
-    <h2>🎛 Apply Filters</h2>
-    <button onclick="updateAudio('play')">Play Base Audio</button>
-    <button onclick="updateAudio('reverse')">Reverse Audio</button>
-    <button onclick="updateAudio('bass')">Bass Boost</button>
-    <button onclick="updateAudio('treble')">Treble Boost</button>
-    <button onclick="updateAudio('echo')">Apply Echo</button>
-    <button onclick="showOverlayUpload()">Apply Overlay</button>
-  </section>
+                <div class="editor-card greek-card filters-section">
+                    <div class="card-header">
+                        <h2>🎛 Apply Filters</h2>
+                    </div>
+                    <div class="filters-grid">
+                        <button onclick="updateAudio('play')" class="filter-btn">Play Base Audio</button>
+                        <button onclick="updateAudio('reverse')" class="filter-btn">Reverse Audio</button>
+                        <button onclick="updateAudio('bass')" class="filter-btn">Bass Boost</button>
+                        <button onclick="updateAudio('treble')" class="filter-btn">Treble Boost</button>
+                        <button onclick="updateAudio('echo')" class="filter-btn">Apply Echo</button>
+                        <button onclick="showOverlayUpload()" class="filter-btn">Apply Overlay</button>
+                    </div>
+                </div>
 
-  <!-- Overlay Upload (Hidden by Default) -->
-  <section id="overlay-section" style="display: none;">
-    <h2>📂 Upload Overlay Audio</h2>
-    <form id="uploadFormOverlay">
-      <input type="file" id="overlayFile" name="overlay_file" accept="audio/*" required>
-      <button type="submit">Upload & Apply Overlay</button>
-    </form>
-  </section>
+                <div id="overlay-section" class="editor-card greek-card overlay-section" style="display: none;">
+                    <div class="card-header">
+                        <h2>📂 Upload Overlay Audio</h2>
+                    </div>
+                    <form id="uploadFormOverlay" class="upload-form">
+                        <div class="file-input-wrapper">
+                            <input type="file" id="overlayFile" name="overlay_file" accept="audio/*" required>
+                            <label for="overlayFile" class="file-label">Choose File</label>
+                        </div>
+                        <button type="submit" class="btn primary">Upload & Apply Overlay</button>
+                    </form>
+                </div>
 
-  <!-- Audio Player -->
-  <h2>🎶 Audio Player</h2>
-  <audio controls id="audio-player">
-    <source id="audio-source" src="" type="audio/mpeg" />
-    Your browser does not support the audio element.
-  </audio>
+                <div class="editor-card greek-card player-section">
+                    <div class="card-header">
+                        <h2>🎶 Audio Player</h2>
+                    </div>
+                    <div class="audio-player-wrapper">
+                        <audio controls id="audio-player" class="custom-audio-player">
+                            <source id="audio-source" src="" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="greek-pattern-bottom"></div>
 </body>
 </html>
