@@ -1,60 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Image Processing</title>
-    <link rel="stylesheet" href="{{url_for('images.static',filename = 'css/style.css')}}">
-</head>
-<body>
-    <section>
-        <div class="boxes">
-            <h1>Original Image</h1>
-            <img src="{{ url_for('images.static', filename='images/' + filename) }}" alt="Uploaded Image" width="300">
-            <form class=form2 action="{{ url_for('images.upload_image') }}" method="POST" enctype="multipart/form-data">
-                <label for="file-input" class="label-choose">Choose file</label>
-                <input type="file" name="image" id="file-input" required>
-                <button type="submit">Upload</button>
-            </form>
-        </div>
-        <div class="boxes">
-            <h2>Apply Filters</h2>
-            <div class="filters-btn">
-                <a href="{{ url_for('images.apply_filter', filter_type='grayscale', filename=filename) }}"><button class="btn-filter">Grayscale</button></a> 
-                <a href="{{ url_for('images.apply_filter', filter_type='blur', filename=filename) }}"><button class="btn-filter">Blur</button></a> 
-                <a href="{{ url_for('images.apply_filter', filter_type='edge', filename=filename) }}"><button class="btn-filter">Edge Detection</button></a> 
-                <a href="{{ url_for('images.apply_filter', filter_type='pixelate', filename=filename) }}"><button class="btn-filter">Pixelate</button></a> 
-                <a href="{{ url_for('images.apply_filter', filter_type='cartoon', filename=filename) }}"><button class="btn-filter">Cartoon</button></a> 
-                <a href="{{ url_for('images.apply_filter', filter_type='oil painting', filename=filename) }}"><button class="btn-filter">Oil Painting</button></a> 
-                <a href="{{ url_for('images.apply_filter', filter_type='sepia', filename=filename) }}"><button class="btn-filter">Sepia</button></a> 
-                <a href="{{ url_for('images.apply_filter', filter_type='emboss', filename=filename) }}"><button class="btn-filter">Emboss</button></a> 
-                <a href="{{ url_for('images.apply_filter', filter_type='invert', filename=filename) }}"><button class="btn-filter">Invert</button></a>
-            </div>
-        </div>
-
-        
-        {% if filtered_filename %}
-            <div class="boxes">
-                <h1>Filtered Image</h1>
-                <img src="{{ url_for('images.static', filename=filtered_filename) }}" alt="Filtered Image" width="300">
-                <div class="download-btn2">
-                    <a href="{{ url_for('images.download_img', filename=filtered_filename) }}"><button>Download</button></a>
-                </div>
-            </div>
-        {% else %}
-            <div class="boxes result">
-                <h1 class="result-h1">Result</h1>
-                <ol>
-                    <li>Choose a file</li>
-                    <li>Upload the image</li>
-                    <li>Choose an effect</li>
-                    <li>The result will be showen here</li>
-                </ol>
-            </div>
-        {% endif %}
-    </section> 
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -104,15 +47,15 @@
                 <div class="filters-box">
                     <h2>Apply Filters</h2>
                     <div class="filters-grid">
-                        <a href="{{ url_for('images.apply_filter', filter_type='grayscale', filename=filename) }}" class="filter-btn">Grayscale</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='blur', filename=filename) }}" class="filter-btn">Blur</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='edge', filename=filename) }}" class="filter-btn">Edge Detection</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='pixelate', filename=filename) }}" class="filter-btn">Pixelate</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='cartoon', filename=filename) }}" class="filter-btn">Cartoon</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='oil painting', filename=filename) }}" class="filter-btn">Oil Painting</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='sepia', filename=filename) }}" class="filter-btn">Sepia</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='emboss', filename=filename) }}" class="filter-btn">Emboss</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='invert', filename=filename) }}" class="filter-btn">Invert</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='grayscale', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Grayscale</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='blur', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Blur</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='edge', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Edge Detection</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='pixelate', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Pixelate</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='cartoon', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Cartoon</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='oil painting', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Oil Painting</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='sepia', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Sepia</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='emboss', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Emboss</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='invert', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Invert</a>
                     </div>
                 </div>
 
@@ -140,5 +83,29 @@
             </div>
         </main>
     </div>
+    <script>
+        function highlightFilter(selectedBtn) {
+            // Remove 'active' class from all buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    
+            // Add 'active' class to the clicked button
+            selectedBtn.classList.add('active');
+    
+            // Save selected filter in localStorage (to keep it after page reload)
+            localStorage.setItem('selectedFilter', selectedBtn.innerText);
+        }
+    
+        // Restore the last selected filter when the page reloads
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectedFilter = localStorage.getItem('selectedFilter');
+            if (selectedFilter) {
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    if (btn.innerText === selectedFilter) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+        });
+    </script>    
 </body>
 </html>
