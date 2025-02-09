@@ -1,26 +1,28 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Blueprint
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import os
 
-app = Flask(__name__)
-UPLOAD_FOLDER = "static/uploads"
+# app = Flask(__name__)
+data_bp = Blueprint("visualization",__name__,template_folder="templates",static_folder="static")
+
+UPLOAD_FOLDER = "Apps/data_visualization/static/uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# data_bp.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-@app.route('/', methods=['GET', 'POST'])
+@data_bp.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    return render_template('index_data.html')
 
-@app.route('/visualize', methods=['POST'])
+@data_bp.route('/visualize', methods=['POST'])
 def visualize():
     file = request.files['file']
     color_scale = request.form['color_scale']
     graph_type = request.form['graph_type']
     
     if file:
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        file_path = os.path.join(UPLOAD_FOLDER, file.filename)
         file.save(file_path)
         df = pd.read_csv(file_path)
         df_2020 = df[df["Year"] == 2020]
@@ -49,5 +51,5 @@ def visualize():
     
     return "Error processing file."
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)

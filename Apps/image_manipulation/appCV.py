@@ -42,7 +42,7 @@ def apply_filter(filter_type,filename):
         img = grayscale(img)
     elif filter_type == "blur":
         img = blur(img)
-    elif filter_type == "edge":
+    elif filter_type == "edge detection":
         img = edge_detection(img,[100,200])
     elif filter_type == "pixelate":
         img = pixelation(img)

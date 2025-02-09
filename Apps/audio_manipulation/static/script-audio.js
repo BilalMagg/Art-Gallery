@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("uploadFormBase").addEventListener("submit", uploadBase);
     document.getElementById("uploadFormOverlay").addEventListener("submit", uploadOverlay);
   });
+  console.log("js")
   
   // Map button "effects" to the Flask endpoints
   function updateAudio(effect) {
@@ -11,12 +12,12 @@ document.addEventListener("DOMContentLoaded", function () {
   
     // Routes for each effect
     let effectsMap = {
-      "play":    "/play-audio",
-      "reverse": "/filter/reverse",
-      "bass":    "/filter/bass",
-      "treble":  "/filter/treble",
-      "echo":    "/filter/echo",
-      "overlay": "/filter/overlay"
+      "play":    "/audios/play-audio",
+      "reverse": "/audios/filter/reverse",
+      "bass":    "/audios/filter/bass",
+      "treble":  "/audios/filter/treble",
+      "echo":    "/audios/filter/echo",
+      "overlay": "/audios/filter/overlay"
     };
   
     // If we only want to show the overlay form
@@ -47,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var fileInput = document.getElementById("baseFile");
     formData.append("file", fileInput.files[0]);
   
-    fetch("/upload", { method: "POST", body: formData })
+    fetch("/audios/upload", { method: "POST", body: formData })
       .then(response => response.json())
       .then(data => {
         if (data.status === "success") {
@@ -70,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var fileInput = document.getElementById("overlayFile");
     formData.append("overlay_file", fileInput.files[0]);
   
-    fetch("/upload-overlay", { method: "POST", body: formData })
+    fetch("/audios/upload-overlay", { method: "POST", body: formData })
       .then(response => response.json())
       .then(data => {
         if (data.status === "success") {

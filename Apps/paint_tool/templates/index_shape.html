@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shape Creator - Greek Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('shapes.static', filename='style.css') }}">
+</head>
+<body>
+    <div class="greek-pattern-top"></div>
+    <div class="container">
+        <header>
+            <nav>
+                <div class="logo">
+                    <svg viewBox="0 0 24 24" class="logo-icon">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                    </svg>
+                    <span>Grecian Gallery</span>
+                </div>
+                
+                <div class="nav-links">
+                    <a href='/'>Home</a>
+                    <a href='/shapes'>Shapes</a>
+                    <a href='/visualization'>Data</a>
+                    <a href='/images'>Images</a>
+                    <a href='/audios'>Audio</a>
+                    <a href='/ml'>ML</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="shape-creator">
+            <h1 class="greek-title">Shape Creator</h1>
+            
+            <div class="workspace">
+                <!-- Toolbar with hover tooltips -->
+                <div id="toolbar" class="greek-toolbar">
+                    <div class="tool selected" id="drawTool" onclick="selectTool('draw')" data-tooltip="Free Draw">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
+                    </div>
+
+                    <div class="tool" id="shapeTool" onclick="selectTool('shape')" data-tooltip="Add Shape">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="4" y="4" width="16" height="16" rx="2"/>
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M4 12h16"/>
+                        </svg>
+                    </div>
+
+                    <div class="tool" id="moveTool" onclick="selectTool('move')" data-tooltip="Move Shape">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l3-3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/>
+                        </svg>
+                    </div>
+
+                    <div class="tool" id="resizeTool" onclick="selectTool('resize')" data-tooltip="Resize Shape">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 3L3 21M21 3h-7M21 3v7M3 21h7M3 21v-7"/>
+                        </svg>
+                    </div>
+
+                    <div class="tool" id="recolorTool" onclick="selectTool('recolor')" data-tooltip="Recolor Shape">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2l-5.5 9h11L12 2zM12 22a7 7 0 0 0 7-7c0-2-3-8-7-8s-7 6-7 8a7 7 0 0 0 7 7z"/>
+                        </svg>
+                    </div>
+
+                    <div class="tool" id="renameTool" onclick="selectTool('rename')" data-tooltip="Rename Shape">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                        </svg>
+                    </div>
+
+                    <div class="tool-separator"></div>
+
+                    <label class="color-tool" data-tooltip="Pick Color">
+                        <input type="color" id="colorPicker" />
+                        <div class="color-preview"></div>
+                    </label>
+
+                    <button class="clear-btn" onclick="clearCanvas()" data-tooltip="Clear Canvas">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Brush size control -->
+                <div id="brushSizeContainer" class="brush-size-control">
+                    <label for="brushSize">Brush Size</label>
+                    <input type="range" id="brushSize" min="1" max="20" value="2">
+                    <span class="size-preview"></span>
+                </div>
+
+                <!-- Shape selection panel -->
+                <div id="shapeOptions" class="shape-panel">
+                    <div class="shape-btn" onclick="setShapeType('circle')" data-tooltip="Circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                        </svg>
+                    </div>
+                    <div class="shape-btn" onclick="setShapeType('rectangle')" data-tooltip="Rectangle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="4" y="4" width="16" height="16" rx="2"/>
+                        </svg>
+                    </div>
+                    <div class="shape-btn" onclick="setShapeType('triangle')" data-tooltip="Triangle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 3L3 21h18L12 3z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Canvas container -->
+                <div id="canvas-container">
+                    <canvas id="canvas" width="700" height="500"></canvas>
+                    <button class="download-btn" onclick="downloadCanvas()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                        </svg>
+                        Download Artwork
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="greek-pattern-bottom"></div>
+    <script src="{{ url_for('shapes.static', filename='script.js') }}"></script>
+</body>
+</html>

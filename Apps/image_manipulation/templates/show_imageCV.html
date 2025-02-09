@@ -22,7 +22,7 @@
                     <a href='/shapes'>Shapes</a>
                     <a href='/visualization'>Data</a>
                     <a href='/images'>Images</a>
-                    <a href='/audio'>Audio</a>
+                    <a href='/audios'>Audio</a>
                     <a href='/ml'>ML</a>
                 </div>
             </nav>
@@ -47,15 +47,15 @@
                 <div class="filters-box">
                     <h2>Apply Filters</h2>
                     <div class="filters-grid">
-                        <a href="{{ url_for('images.apply_filter', filter_type='grayscale', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Grayscale</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='blur', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Blur</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='edge', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Edge Detection</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='pixelate', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Pixelate</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='cartoon', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Cartoon</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='oil painting', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Oil Painting</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='sepia', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Sepia</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='emboss', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Emboss</a>
-                        <a href="{{ url_for('images.apply_filter', filter_type='invert', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)">Invert</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='grayscale', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)" data-filter="grayscale">Grayscale</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='blur', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)" data-filter="blur">Blur</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='edge detection', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)" data-filter="edge detection">Edge Detection</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='pixelate', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)" data-filter="pixelate">Pixelate</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='cartoon', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)" data-filter="cartoon">Cartoon</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='oil painting', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)" data-filter="oil painting">Oil Painting</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='sepia', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)" data-filter="sepia">Sepia</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='emboss', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)" data-filter="emboss">Emboss</a>
+                        <a href="{{ url_for('images.apply_filter', filter_type='invert', filename=filename) }}" class="filter-btn" onclick="highlightFilter(this)" data-filter="invert">Invert</a>
                     </div>
                 </div>
 
@@ -84,28 +84,27 @@
         </main>
     </div>
     <script>
-        function highlightFilter(selectedBtn) {
-            // Remove 'active' class from all buttons
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    
-            // Add 'active' class to the clicked button
-            selectedBtn.classList.add('active');
-    
-            // Save selected filter in localStorage (to keep it after page reload)
-            localStorage.setItem('selectedFilter', selectedBtn.innerText);
-        }
-    
-        // Restore the last selected filter when the page reloads
-        document.addEventListener('DOMContentLoaded', function () {
-            const selectedFilter = localStorage.getItem('selectedFilter');
-            if (selectedFilter) {
-                document.querySelectorAll('.filter-btn').forEach(btn => {
-                    if (btn.innerText === selectedFilter) {
-                        btn.classList.add('active');
-                    }
-                });
-            }
+        document.addEventListener("DOMContentLoaded", function () {
+            const filterButtons = document.querySelectorAll(".filter-btn");
+
+            // Get the current URL path and split it into segments
+            const pathSegments = window.location.pathname.split("/");
+
+            // Assuming the filter type is always at index 3 (based on your URL pattern)
+            const currentFilter = decodeURIComponent(pathSegments[3]); // 'emboss' in your example
+
+            console.log("Extracted filter:", currentFilter); // Debugging
+
+            // Match filter buttons and apply active style
+            filterButtons.forEach(button => {
+                if (button.dataset.filter === currentFilter) {
+                    button.classList.add("active");
+                } else {
+                    button.classList.remove("active");
+                }
+            });
         });
-    </script>    
+    </script>
+       
 </body>
 </html>
