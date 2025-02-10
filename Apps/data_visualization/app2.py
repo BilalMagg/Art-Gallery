@@ -20,7 +20,9 @@ def create_3d_globe(df, color_scale):
         projection_type="orthographic",
         showcoastlines=True,
         showland=True,
-        landcolor="rgb(230, 230, 230)"
+        landcolor="rgb(230, 230, 230)",
+        showocean=True,  # Enable ocean display
+        oceancolor="rgb(150, 200, 255)"  # Set water color (light blue)
     )
     
     frames = [
