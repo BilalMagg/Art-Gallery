@@ -3,28 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Globe Visualization</title>
-    <link rel="stylesheet" href="{{ url_for('visualization.static', filename='css/style.css') }}">
+    <title>Data Visualization Platform</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>3D Globe Visualization</h1>
-    <form action="/visualization" method="post" enctype="multipart/form-data">
-        <label for="file">Upload CSV File:</label>
-        <input type="file" name="file" required>
-        
-        <label for="color_scale">Select Color Scale:</label>
-        <select name="color_scale">
-            <option value="greens">Greens</option>
-            <option value="blues">Blues</option>
-            <option value="reds">Reds</option>
-        </select>
+    <div class="container">
+        <header>
+            <h1>Data Visualization Platform</h1>
+            <p>Upload your dataset and create interactive visualizations</p>
+        </header>
 
-        <button type="submit">Generate Graph</button>
-    </form>
+        <main>
+            <div class="upload-section">
+                <form id="uploadForm" class="config-panel">
+                    <div class="form-group">
+                        <label for="fileInput">Upload Dataset (CSV)</label>
+                        <input type="file" id="fileInput" accept=".csv" required>
+                    </div>
 
-    {% if graph_html %}
-        <h2>Visualization:</h2>
-        {{ graph_html|safe }}
-    {% endif %}
+                    <div id="configSection" class="hidden">
+                        <div class="form-group">
+                            <label for="vizType">Visualization Type</label>
+                            <select id="vizType" required>
+                                <option value="globe">3D Globe</option>
+                                <option value="scatter3d">3D Scatter</option>
+                                <option value="line">Line Chart</option>
+                                <option value="bar">Bar Chart</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="xColumn">X Axis</label>
+                            <select id="xColumn" required></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="yColumn">Y Axis</label>
+                            <select id="yColumn" required></select>
+                        </div>
+
+                        <div class="form-group" id="zColumnGroup">
+                            <label for="zColumn">Z Axis (for 3D)</label>
+                            <select id="zColumn"></select>
+                        </div>
+
+                        <button type="submit" class="btn">Generate Visualization</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="visualization" class="visualization-container hidden">
+                <div id="plotOutput"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
