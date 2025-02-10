@@ -11,3 +11,5 @@ Apps/image_manipulation/static/filtered/
 Apps/image_manipulation/static/images/
 
 static/filtered/
+
+./Apps/data_visualization/static/upload/
