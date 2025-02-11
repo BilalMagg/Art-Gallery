@@ -3,14 +3,18 @@ document.addEventListener('DOMContentLoaded', function() {
   const fileInput = document.getElementById('fileInput');
   const configSection = document.getElementById('configSection');
   const vizType = document.getElementById('vizType');
-  const xColumn = document.getElementById('xColumn');
-  const yColumn = document.getElementById('yColumn');
-  const zColumn = document.getElementById('zColumn');
-  const zColumnGroup = document.getElementById('zColumnGroup');
   const visualization = document.getElementById('visualization');
   const plotOutput = document.getElementById('plotOutput');
-
+  
+  // Additional form elements
+  const timeControls = document.getElementById('timeControls');
+  const countryColumn = document.getElementById('countryColumn');
+  const valueColumn = document.getElementById('valueColumn');
+  const timeColumn = document.getElementById('timeColumn');
+  const timeValue = document.getElementById('timeValue');
+  
   let currentFilename = '';
+  let currentTimeValues = [];
 
   fileInput.addEventListener('change', async function(e) {
       const file = e.target.files[0];
@@ -32,22 +36,22 @@ document.addEventListener('DOMContentLoaded', function() {
               return;
           }
 
-          // Store filename for later use
           currentFilename = data.filename;
 
-          // Populate column selectors
-          const columns = data.columns;
-          [xColumn, yColumn, zColumn].forEach(select => {
-              select.innerHTML = '<option value="">Select Column</option>';
-              columns.forEach(column => {
-                  const option = document.createElement('option');
-                  option.value = column;
-                  option.textContent = column;
-                  select.appendChild(option);
-              });
-          });
+          // Populate all column selectors
+          populateColumnSelect(valueColumn, data.columns);
+          
+          // Populate country column selector with detected columns
+          populateColumnSelect(countryColumn, data.country_columns);
+          
+          // Handle time-related columns
+          if (data.time_columns.length > 0) {
+              populateColumnSelect(timeColumn, data.time_columns);
+              timeControls.classList.remove('hidden');
+          } else {
+              timeControls.classList.add('hidden');
+          }
 
-          // Show configuration section
           configSection.classList.remove('hidden');
 
       } catch (error) {
@@ -56,9 +60,36 @@ document.addEventListener('DOMContentLoaded', function() {
       }
   });
 
+  // Update time values when time column is selected
+  timeColumn.addEventListener('change', async function() {
+      if (!currentFilename || !this.value) return;
+
+      try {
+          const response = await fetch('/get_time_values', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  filename: currentFilename,
+                  time_column: this.value
+              })
+          });
+
+          const data = await response.json();
+          if (data.success) {
+              currentTimeValues = data.time_values;
+              populateTimeValues(timeValue, currentTimeValues);
+          }
+      } catch (error) {
+          console.error('Error:', error);
+      }
+  });
+
   vizType.addEventListener('change', function() {
-      zColumnGroup.style.display = 
-          ['scatter3d'].includes(this.value) ? 'block' : 'none';
+      const isGlobe = this.value === 'globe';
+      document.getElementById('globeControls').style.display = isGlobe ? 'block' : 'none';
+      timeControls.style.display = isGlobe ? 'block' : 'none';
   });
 
   uploadForm.addEventListener('submit', async function(e) {
@@ -67,9 +98,10 @@ document.addEventListener('DOMContentLoaded', function() {
       const vizData = {
           filename: currentFilename,
           viz_type: vizType.value,
-          x_column: xColumn.value,
-          y_column: yColumn.value,
-          z_column: zColumn.value
+          country_column: countryColumn.value,
+          value_column: valueColumn.value,
+          time_column: timeColumn.value,
+          time_value: timeValue.value
       };
 
       try {
@@ -88,10 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
               return;
           }
 
-          // Show visualization container
           visualization.classList.remove('hidden');
-
-          // Parse the plot data and create the visualization
           const plotData = JSON.parse(data.plot);
           Plotly.newPlot('plotOutput', plotData.data, plotData.layout);
 
@@ -100,4 +129,24 @@ document.addEventListener('DOMContentLoaded', function() {
           alert('Error generating visualization');
       }
   });
+
+  function populateColumnSelect(select, columns) {
+      select.innerHTML = '<option value="">Select Column</option>';
+      columns.forEach(column => {
+          const option = document.createElement('option');
+          option.value = column;
+          option.textContent = column;
+          select.appendChild(option);
+      });
+  }
+
+  function populateTimeValues(select, values) {
+      select.innerHTML = '<option value="">Select Time Value</option>';
+      values.forEach(value => {
+          const option = document.createElement('option');
+          option.value = value;
+          option.textContent = value;
+          select.appendChild(option);
+      });
+  }
 });

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Visualization Platform</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('visualization.static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="container">
@@ -48,6 +48,31 @@
                             <select id="zColumn"></select>
                         </div>
 
+                        <!-- Add this inside the configSection div -->
+                        <div id="globeControls" class="form-group hidden">
+                            <div class="form-group">
+                                <label for="countryColumn">Country Column</label>
+                                <select id="countryColumn" required></select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="valueColumn">Value Column</label>
+                                <select id="valueColumn" required></select>
+                            </div>
+                            
+                            <div id="timeControls" class="form-group hidden">
+                                <div class="form-group">
+                                    <label for="timeColumn">Time Column</label>
+                                    <select id="timeColumn"></select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="timeValue">Select Time Period</label>
+                                    <select id="timeValue"></select>
+                                </div>
+                            </div>
+                        </div>
+
                         <button type="submit" class="btn">Generate Visualization</button>
                     </div>
                 </form>
@@ -59,6 +84,6 @@
         </main>
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('visualization.static', filename='js/script.js') }}"></script>
 </body>
 </html>
