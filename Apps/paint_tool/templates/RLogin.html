@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shape Drawing Options</title>
+  <link rel="stylesheet" href="{{ url_for('shapes.static', filename='css/style.css') }}">
+  <!-- <script 
+  src="https://kit.fontawesome.com/64d58efce2.js"
+  ></script> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <section class="container">
+    <div class="forms-container">
+      <div class="signin-signup">
+        <form class="sign-in-form">
+          <h2>Draw with Algorithm</h2>
+          <p>Generate random shapes with various colors and positions.</p>
+          <div class="preview-container">
+            <canvas id="algorithmPreview" width="300" height="150"></canvas>
+            <p>Click to generate a new pattern!</p>
+          </div>
+          <input type="submit" value="Start free drawing">
+
+          <p class="social-text">Or Sign in with social platforms</p>
+          <div class="social-media">
+            <a href="https://facebook.com" target="_blank" class="social-icon"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://google.com" target="_blank" class="social-icon"><i class="fa-brands fa-google"></i></a>
+            <a href="https://github.com" target="_blank" class="social-icon"><i class="fa-brands fa-github"></i></a>
+            <a href="https://twitter.com" target="_blank" class="social-icon"><i class="fa-brands fa-twitter"></i></a>
+            <a href="https://linkedin.com" target="_blank" class="social-icon"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+        </form>
+        <form class="sign-up-form">
+          <h2>Free Draw</h2>
+          <p>Draw any shapes you like with custom colors and sizes.</p>
+          <div class="preview-canvas">
+            <canvas id="freeDrawPreview" width="300" height="150"></canvas>
+            <p>Click and drag to try it out!</p>
+          </div>
+          <input type="submit" value="Start Algorithm Drawing">
+
+          <p class="social-text">Or Sign up with social platforms</p>
+          <div class="social-media">
+            <a href="#" class="social-icon"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-google"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-github"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="panels-container">
+      <div class="panel left-panel">
+        <div class="content">
+          <h3>Want to draw freely?</h3>
+          <p>Create your own unique shapes and designs</p>
+          <button class="btn transparent" id="sign-up-btn">Free Draw</button>
+        </div>
+
+        <img src="{{ url_for('shapes.static', filename='svg/free_draw.svg') }}" class="image">
+      </div>
+      <div class="panel right-panel">
+        <div class="content">
+          <h3>Interested in algorithmic art?</h3>
+          <p>Let the computer generate amazing patterns for you</p>
+          <button class="btn transparent" id="sign-in-btn">Algorithm Draw</button>
+        </div>
+        
+        <img src="{{ url_for('shapes.static', filename='svg/algo_draw.svg') }}" class="image">
+      </div>
+    </div>
+  </section>
+
+  <script src="{{ url_for('shapes.static', filename='js/script.js') }}"></script>
+</body>
+</html>

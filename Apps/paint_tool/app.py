@@ -5,7 +5,7 @@ shapes_bp = Blueprint("shapes",__name__,template_folder="templates",static_folde
 
 @shapes_bp.route("/")
 def home():
-    return render_template("index_shape.html")
+    return render_template("RLogin.html")
 
 # if __name__ == "__main__":
 #     app.run(debug=True)
