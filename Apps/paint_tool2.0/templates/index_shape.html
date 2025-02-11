@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Drawing App</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      font-family: sans-serif;
+      background: #333;
+      color: #eee;
+    }
+    .toolbar {
+      position: fixed;
+      left: 0; top: 0; bottom: 0;
+      width: 60px;
+      background: #4a4a4a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 10px;
+    }
+    .toolbar button {
+      width: 40px; height: 40px;
+      margin: 5px 0;
+      background: #2e2e2e;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .toolbar button.active {
+      background: #666;
+    }
+    .line-thickness {
+      margin-top: 10px;
+      display: none; /* show only if line tool is active */
+      color: #fff;
+    }
+    .shapes-popup {
+      position: absolute;
+      left: 70px;
+      top: 50px;
+      background: #4a4a4a;
+      padding: 5px;
+      display: none; /* show/hide when shape tool is clicked */
+    }
+    .shapes-popup button {
+      display: block;
+      margin: 5px;
+      background: #2e2e2e;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+    #canvasWrapper {
+      margin-left: 70px; /* leave space for the toolbar */
+      padding: 10px;
+    }
+    #canvasImage {
+      background: #fff;
+      border: 1px solid #555;
+    }
+  </style>
+</head>
+<body>
+  <!-- Photoshop-like vertical toolbar -->
+  <div class="toolbar">
+    <!-- Move tool -->
+    <button id="moveBtn" title="Move Tool">↔</button>
+    <!-- Line tool -->
+    <button id="lineBtn" title="Line Tool">🖉</button>
+    <!-- Shape tool -->
+    <button id="shapeBtn" title="Shape Tool">■</button>
+    <!-- Resize tool -->
+    <button id="resizeBtn" title="Resize Tool">⤡</button>
+    <!-- Recolor tool -->
+    <button id="recolorBtn" title="Recolor Tool">🎨</button>
+    <!-- Clear -->
+    <button id="clearBtn" title="Clear Canvas">🗑</button>
+
+    <!-- A small slider for line thickness -->
+    <div class="line-thickness" id="lineThicknessWrap">
+      <label for="lineThickness" style="font-size:12px">Width</label>
+      <input type="range" id="lineThickness" min="1" max="20" value="4">
+    </div>
+  </div>
+
+  <!-- A popup for multiple shape choices when shape tool is pressed -->
+  <div class="shapes-popup" id="shapesPopup">
+    <button data-shape="circle">Circle</button>
+    <button data-shape="rectangle">Rectangle</button>
+    <button data-shape="triangle">Triangle</button>
+  </div>
+
+  <!-- Canvas area -->
+  <div id="canvasWrapper">
+    <img id="canvasImage" 
+         src="{{ url_for('static', filename='canvas.png') }}"
+         width="800" height="600" alt="Canvas">
+  </div>
+
+  <script>
+    var socket = io();
+    var currentTool = null;
+
+    // For line drawing
+    var drawing = false;
+    var lastX, lastY;
+
+    // For moving shapes
+    var moving = false;
+    var moveStartX, moveStartY;
+
+    // Grab DOM elements
+    const moveBtn      = document.getElementById('moveBtn');
+    const lineBtn      = document.getElementById('lineBtn');
+    const shapeBtn     = document.getElementById('shapeBtn');
+    const resizeBtn    = document.getElementById('resizeBtn');
+    const recolorBtn   = document.getElementById('recolorBtn');
+    const clearBtn     = document.getElementById('clearBtn');
+
+    const lineThicknessWrap = document.getElementById('lineThicknessWrap');
+    const lineThickness = document.getElementById('lineThickness');
+
+    const shapesPopup = document.getElementById('shapesPopup');
+    const shapesButtons = shapesPopup.querySelectorAll('button');
+
+    const canvasImage  = document.getElementById('canvasImage');
+
+    // Initialize
+    setTool(null); // no tool selected by default
+
+    // Prevent default right-click menu on the canvas, so we can use right-click for resizing smaller
+    canvasImage.addEventListener("contextmenu", function(e){
+      e.preventDefault();
+    });
+
+    //-------------------------------
+    // TOOL BUTTON HANDLERS
+    //-------------------------------
+    moveBtn.onclick = () => setTool('move');
+    lineBtn.onclick = () => setTool('line');
+    shapeBtn.onclick = () => {
+      setTool('shape');
+      // Toggle the shape popup
+      shapesPopup.style.display = 
+        (shapesPopup.style.display === 'block') ? 'none' : 'block';
+    };
+    resizeBtn.onclick = () => {
+      setTool('resize');
+      shapesPopup.style.display = 'none'; // hide shapes popup if open
+    };
+    recolorBtn.onclick = () => {
+      setTool('recolor');
+      shapesPopup.style.display = 'none';
+    };
+    clearBtn.onclick = () => {
+      socket.emit('clear');
+      shapesPopup.style.display = 'none';
+    };
+
+    // When the user picks an actual shape in the popup
+    shapesButtons.forEach(btn => {
+      btn.onclick = () => {
+        // store the shape type somewhere or just use "shapeChoice" variable
+        shapeChoice = btn.getAttribute('data-shape');
+        // close the popup
+        shapesPopup.style.display = 'none';
+      };
+    });
+
+    // Highlight the active tool & show/hide line thickness slider
+    function setTool(tool) {
+      currentTool = tool;
+      [moveBtn, lineBtn, shapeBtn, resizeBtn, recolorBtn].forEach(b=>{
+        b.classList.remove('active');
+      });
+      if (tool === 'move')     moveBtn.classList.add('active');
+      if (tool === 'line')     lineBtn.classList.add('active');
+      if (tool === 'shape')    shapeBtn.classList.add('active');
+      if (tool === 'resize')   resizeBtn.classList.add('active');
+      if (tool === 'recolor')  recolorBtn.classList.add('active');
+
+      // Show line thickness control only if line tool is selected
+      lineThicknessWrap.style.display = (tool === 'line') ? 'block' : 'none';
+    }
+
+    // Current shape choice for "shape" tool
+    var shapeChoice = 'circle'; // default if none chosen from popup yet
+
+    //-------------------------------
+    // MOUSE EVENTS
+    //-------------------------------
+    canvasImage.addEventListener("dragstart", e => e.preventDefault());
+
+    function getMousePos(evt) {
+      var rect = canvasImage.getBoundingClientRect();
+      return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+      };
+    }
+
+    // MOUSE DOWN
+    canvasImage.addEventListener("mousedown", (e) => {
+      const {x, y} = getMousePos(e);
+
+      if (currentTool === 'line') {
+        drawing = true;
+        lastX = x; 
+        lastY = y;
+      }
+      else if (currentTool === 'shape') {
+        // Emit one shape (the user selected from the popup) at the click
+        socket.emit("draw", {
+          shape: shapeChoice,
+          x: x,
+          y: y,
+          size: 30,          // default shape size
+          color: "#000000"
+        });
+      }
+      else if (currentTool === 'move') {
+        moving = true;
+        moveStartX = x;
+        moveStartY = y;
+      }
+      else if (currentTool === 'resize') {
+        // We interpret left-click as "bigger", right-click as "smaller"
+        if (e.button === 0) { // left
+          socket.emit("resize", {
+            x: x,
+            y: y,
+            direction: "bigger"
+          });
+        }
+        else if (e.button === 2) { // right
+          socket.emit("resize", {
+            x: x,
+            y: y,
+            direction: "smaller"
+          });
+        }
+      }
+      else if (currentTool === 'recolor') {
+        // For a real app, use a color picker somewhere
+        // Hardcode color for example, or prompt user
+        let color = "#FF0000";
+        socket.emit("recolor", {
+          x: x,
+          y: y,
+          new_color: color
+        });
+      }
+    });
+
+    // MOUSE MOVE
+    canvasImage.addEventListener("mousemove", (e) => {
+      const {x, y} = getMousePos(e);
+
+      if (currentTool === 'line' && drawing) {
+        const width = parseInt(lineThickness.value) || 4;
+        // Emit a line from (lastX, lastY) to (x, y)
+        socket.emit("draw", {
+          shape: "line",
+          x1: lastX,
+          y1: lastY,
+          x2: x,
+          y2: y,
+          color: "#000000",
+          width: width
+        });
+        lastX = x;
+        lastY = y;
+      }
+      else if (currentTool === 'move' && moving) {
+        socket.emit("move", {
+          x: moveStartX,
+          y: moveStartY,
+          new_x: x,
+          new_y: y
+        });
+        moveStartX = x;
+        moveStartY = y;
+      }
+    });
+
+    // MOUSE UP
+    canvasImage.addEventListener("mouseup", (e) => {
+      drawing = false;
+      moving = false;
+    });
+
+    // SERVER → CLIENT update
+    socket.on("update_canvas", (data) => {
+      canvasImage.src = data.image_url + "?t=" + new Date().getTime();
+    });
+  </script>
+</body>
+</html>
