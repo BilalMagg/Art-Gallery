@@ -14,14 +14,14 @@
   <section class="container">
     <div class="forms-container">
       <div class="signin-signup">
-        <form class="sign-in-form">
+        <div class="form sign-in-form">
           <h2>Draw with Algorithm</h2>
           <p>Generate random shapes with various colors and positions.</p>
           <div class="preview-container">
             <canvas id="algorithmPreview" width="300" height="150"></canvas>
             <p>Click to generate a new pattern!</p>
           </div>
-          <input type="submit" value="Start free drawing">
+          <a href="{{ url_for('shapes.algo_draw') }}" class="choice-link"><input type="submit" value="Start Algorithm Drawing"></a>
 
           <p class="social-text">Or Sign in with social platforms</p>
           <div class="social-media">
@@ -31,15 +31,15 @@
             <a href="https://twitter.com" target="_blank" class="social-icon"><i class="fa-brands fa-twitter"></i></a>
             <a href="https://linkedin.com" target="_blank" class="social-icon"><i class="fa-brands fa-linkedin-in"></i></a>
           </div>
-        </form>
-        <form class="sign-up-form">
+        </div>
+        <div action="/" class=" form sign-up-form">
           <h2>Free Draw</h2>
           <p>Draw any shapes you like with custom colors and sizes.</p>
           <div class="preview-canvas">
             <canvas id="freeDrawPreview" width="300" height="150"></canvas>
             <p>Click and drag to try it out!</p>
           </div>
-          <input type="submit" value="Start Algorithm Drawing">
+          <a href="{{ url_for('shapes.free_draw') }}" class="choice-link"><button>Start free drawing</button></a>
 
           <p class="social-text">Or Sign up with social platforms</p>
           <div class="social-media">
@@ -49,7 +49,7 @@
             <a href="#" class="social-icon"><i class="fa-brands fa-twitter"></i></a>
             <a href="#" class="social-icon"><i class="fa-brands fa-linkedin-in"></i></a>
           </div>
-        </form>
+        </div>
       </div>
     </div>
 

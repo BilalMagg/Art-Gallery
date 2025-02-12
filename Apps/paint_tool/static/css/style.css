@@ -62,7 +62,7 @@ section:before {
   transition: .8s .3s ease-in-out;
 }
 
-form {
+.form {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -74,11 +74,11 @@ form {
   transition: .2s .7s ease-in-out;
 }
 
-form.sign-in-form {
+.form.sign-in-form {
   z-index: 2;
 }
 
-form.sign-up-form {
+.form.sign-up-form {
   z-index: 1;
   opacity: 0;
 }
@@ -123,7 +123,7 @@ h2 {
   }
 }
 
-input[type="submit"] {
+input[type="submit"], a.choice-link button{
   width: 250px;
   height: 50px;
   border: none;
@@ -270,12 +270,12 @@ button.transparent {
   left: 25%;
   }
 
-  form.sign-in-form {
+  .form.sign-in-form {
     z-index: 1;
     opacity: 0;
   }
 
-  form.sign-up-form {
+  .form.sign-up-form {
     z-index: 2;
     opacity: 1;
   }
@@ -304,12 +304,12 @@ button.transparent {
   left: 75%;
   }
 
-  form.sign-in-form {
+  .form.sign-in-form {
     z-index: 2;
     opacity: 1;
   }
 
-  form.sign-up-form {
+  .form.sign-up-form {
     z-index: 1;
     opacity: 0;
   }

@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, Blueprint
 from flask_socketio import SocketIO, emit
 import pygame
 import os

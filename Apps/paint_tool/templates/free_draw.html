@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Drawing App</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+  <style>
+    body { margin: 0; padding: 0; font-family: sans-serif; background: #333; color: #eee; }
+    
+    /* Sidebar Toolbar */
+    .toolbar {
+      position: fixed; left: 0; top: 0; bottom: 0;
+      width: 60px; background: #4a4a4a;
+      display: flex; flex-direction: column; align-items: center; padding-top: 10px;
+    }
+    
+    .toolbar button {
+      width: 40px; height: 40px; margin: 5px 0;
+      background: #2e2e2e; border: none; color: white;
+      cursor: pointer; font-size: 18px; display: flex;
+      align-items: center; justify-content: center;
+    }
+    
+    .toolbar button.active { background: #666; }
+    
+    /* Floating Line Thickness Control */
+    .line-thickness {
+      position: absolute; left: 70px; top: 60px;
+      background: #4a4a4a; padding: 10px; border-radius: 5px;
+      display: none; color: #fff;
+    }
+    
+    /* Floating Color Picker */
+    .color-picker {
+      position: absolute; left: 70px; top: 160px;
+      background: #4a4a4a; padding: 10px; border-radius: 5px;
+      display: none; color: #fff;
+    }
+    
+    /* Shape Selection Popup */
+    .shapes-popup {
+      position: absolute; left: 70px; top: 100px;
+      background: #4a4a4a; padding: 5px; display: none;
+    }
+    
+    .shapes-popup button {
+      display: block; margin: 5px;
+      background: #2e2e2e; border: none; color: #fff;
+      cursor: pointer; width: 80px;
+    }
+    
+    /* Canvas */
+    #canvasWrapper { margin-left: 70px; padding: 10px; }
+    #canvasImage { background: #fff; border: 1px solid #555; user-select: none; }
+  </style>
+</head>
+<body>
+  <!-- Photoshop-like vertical toolbar -->
+  <div class="toolbar">
+    <button data-tool="move" title="Move Tool">↔</button>
+    <button data-tool="line" title="Line Tool">🖉</button>
+    <button data-tool="shape" title="Shape Tool">■</button>
+    <button data-tool="resize" title="Resize Tool">⤡</button>
+    <button data-tool="recolor" title="Recolor Tool">🎨</button>
+    <button id="clearBtn" title="Clear Canvas">🗑</button>
+  </div>
+
+  <!-- Floating Line Thickness Control -->
+  <div class="line-thickness">
+    <label for="lineThickness">Width</label>
+    <input type="range" id="lineThickness" min="1" max="20" value="4">
+  </div>
+
+  <!-- Floating Color Picker -->
+  <div class="color-picker">
+    <label for="colorPicker">Pick Color</label>
+    <input type="color" id="colorPicker">
+  </div>
+
+  <!-- Shape Selection Popup -->
+  <div class="shapes-popup" id="shapesPopup">
+    <button data-shape="circle">Circle</button>
+    <button data-shape="rectangle">Rectangle</button>
+    <button data-shape="triangle">Triangle</button>
+  </div>
+
+  <!-- Canvas -->
+  <div id="canvasWrapper">
+    <img id="canvasImage" 
+         src="{{ url_for('static', filename='canvas.png') }}"
+         width="800" height="600" alt="Canvas">
+  </div>
+
+  <script>
+    var socket = io();
+    var currentTool = null;
+    var drawing = false, moving = false;
+    var lastX, lastY, moveStartX, moveStartY;
+    var shapeChoice = 'circle'; // Default shape
+    var selectedColor = "#000000"; // Default black
+
+    // Get elements
+    const toolbarBtns = document.querySelectorAll('.toolbar button');
+    const canvasImage = document.getElementById('canvasImage');
+    const lineThicknessWrap = document.querySelector('.line-thickness');
+    const lineThickness = document.getElementById('lineThickness');
+    const colorPickerWrap = document.querySelector('.color-picker');
+    const colorPicker = document.getElementById('colorPicker');
+    const shapesPopup = document.getElementById('shapesPopup');
+    const shapeBtns = shapesPopup.querySelectorAll('button');
+
+    // Prevent right-click menu for resize & prevent image dragging
+    canvasImage.addEventListener("contextmenu", e => e.preventDefault());
+    canvasImage.addEventListener("dragstart", e => e.preventDefault());
+
+    // Switch tools
+    toolbarBtns.forEach(btn => {
+        btn.onclick = () => {
+            toolbarBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentTool = btn.dataset.tool;
+
+            // Toggle floating UI elements
+            lineThicknessWrap.style.display = (currentTool === 'line') ? 'block' : 'none';
+            shapesPopup.style.display = (currentTool === 'shape') ? 'block' : 'none';
+            colorPickerWrap.style.display = (currentTool === 'recolor') ? 'block' : 'none';
+        };
+    });
+
+    // Shape selection
+    shapeBtns.forEach(btn => btn.onclick = () => {
+        shapeChoice = btn.dataset.shape;
+        shapesPopup.style.display = 'none';
+    });
+
+    // Color Picker Selection
+    colorPicker.addEventListener("input", () => {
+        selectedColor = colorPicker.value;
+    });
+
+    // Get mouse position
+    function getMousePos(evt) {
+        var rect = canvasImage.getBoundingClientRect();
+        return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
+    }
+
+    // Handle drawing, moving, resizing, and recoloring
+    canvasImage.addEventListener("mousedown", e => {
+        e.preventDefault(); // Prevent dragging
+
+        const { x, y } = getMousePos(e);
+
+        if (currentTool === 'line') {
+            drawing = true; lastX = x; lastY = y;
+        } else if (currentTool === 'shape') {
+            socket.emit("draw", { shape: shapeChoice, x, y, size: 30, color: selectedColor });
+        } else if (currentTool === 'move') {
+            moving = true; moveStartX = x; moveStartY = y;
+        } else if (currentTool === 'resize') {
+            socket.emit("resize", { x, y, direction: e.button === 0 ? "bigger" : "smaller" });
+        } else if (currentTool === 'recolor') {
+            socket.emit("recolor", { x, y, new_color: selectedColor });
+        }
+    });
+
+    // Handle line drawing & moving
+    canvasImage.addEventListener("mousemove", e => {
+        e.preventDefault(); // Prevent unwanted dragging
+
+        const { x, y } = getMousePos(e);
+        
+        if (drawing && currentTool === 'line') {
+            socket.emit("draw", { shape: "line", x1: lastX, y1: lastY, x2: x, y2: y, color: selectedColor, width: lineThickness.value });
+            lastX = x; lastY = y;
+        } else if (moving && currentTool === 'move') {
+            socket.emit("move", { x: moveStartX, y: moveStartY, new_x: x, new_y: y });
+            moveStartX = x; moveStartY = y;
+        }
+    });
+
+    // Stop drawing/moving
+    canvasImage.addEventListener("mouseup", () => { drawing = false; moving = false; });
+
+    // Clear canvas
+    document.getElementById("clearBtn").onclick = () => socket.emit("clear");
+
+    // Update canvas when the server sends updates
+    socket.on("update_canvas", data => {
+        canvasImage.src = data.image_url + "?t=" + new Date().getTime();
+    });
+  </script>
+</body>
+</html>
