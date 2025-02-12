@@ -1,18 +1,18 @@
 from flask import Flask, render_template, Blueprint
 from flask_socketio import SocketIO, emit
-from Apps.paint_tool.free_draw.app import free_draw_bp
+from Apps.paint_tool.free_draw.app import free_draw_bp,socketio
 import pygame
 import os
 import time
 
 # app = Flask(__name__, static_folder="static", template_folder="templates")
-socketio = SocketIO()
+# socketio = SocketIO()
 
 # Define Blueprint for shapes
 shapes_bp = Blueprint("shapes", __name__, template_folder="templates", static_folder="static")
 shapes_bp.register_blueprint(free_draw_bp, url_prefix="/free_draw")
 
-@shapes_bp.route("/")
+@shapes_bp.route("/")   
 def home():
     return render_template("RLogin.html")
 

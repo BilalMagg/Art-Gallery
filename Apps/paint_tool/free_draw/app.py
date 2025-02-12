@@ -14,7 +14,7 @@ canvas = pygame.Surface((WIDTH, HEIGHT))
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 if not os.path.exists(STATIC_DIR):
     os.makedirs(STATIC_DIR)
-
+print(STATIC_DIR)
 CANVAS_PATH = os.path.join(STATIC_DIR, "canvas.png")
 
 shapes = []
@@ -75,6 +75,7 @@ def on_draw(data):
       ...
     }
     """
+    print("draw")
     shape_type = data['shape']
 
     if shape_type == 'line':
@@ -102,7 +103,7 @@ def on_draw(data):
 
     redraw_canvas()
     maybe_save_canvas()
-    emit('update_canvas', {'image_url': '/static/canvas.png'}, broadcast=True)
+    emit('update_canvas', {'image_url': '/shapes/free_draw/static/canvas.png'}, broadcast=True)
 
 @socketio.on('move')
 def on_move(data):
@@ -122,7 +123,7 @@ def on_move(data):
 
     redraw_canvas()
     maybe_save_canvas()
-    emit('update_canvas', {'image_url': '/static/canvas.png'}, broadcast=True)
+    emit('update_canvas', {'image_url': '/shapes/free_draw/static/canvas.png'}, broadcast=True)
 
 @socketio.on('resize')
 def on_resize(data):
@@ -146,7 +147,7 @@ def on_resize(data):
 
     redraw_canvas()
     maybe_save_canvas()
-    emit('update_canvas', {'image_url': '/static/canvas.png'}, broadcast=True)
+    emit('update_canvas', {'image_url': '/shapes/free_draw/static/canvas.png'}, broadcast=True)
 
 @socketio.on('recolor')
 def on_recolor(data):
@@ -161,18 +162,19 @@ def on_recolor(data):
             if abs(shape['x'] - x) < shape['size'] and abs(shape['y'] - y) < shape['size']:
                 shape['color'] = new_color
                 break
-
+    print("recolor")
     redraw_canvas()
     maybe_save_canvas()
-    emit('update_canvas', {'image_url': '/static/canvas.png'}, broadcast=True)
+    emit('update_canvas', {'image_url': '/shapes/free_draw/static/canvas.png'}, broadcast=True)
 
 @socketio.on('clear')
 def on_clear():
     global shapes
     shapes = []
+    print("clear")
     redraw_canvas()
     maybe_save_canvas(force=True)
-    emit('update_canvas', {'image_url': '/static/canvas.png'}, broadcast=True)
+    emit('update_canvas', {'image_url': '/shapes/free_draw/static/canvas.png'}, broadcast=True)
 
 # if __name__ == '__main__':
 #     redraw_canvas()
