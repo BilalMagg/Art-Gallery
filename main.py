@@ -1,7 +1,8 @@
 from flask import Flask, render_template
+from flask_socketio import SocketIO
 
 # Import blueprints from each app
-from Apps.paint_tool.app import shapes_bp
+from Apps.paint_tool.app import shapes_bp, socketio
 from Apps.data_visualization.app import data_bp
 from Apps.image_manipulation.appCV import image_bp
 from Apps.audio_manipulation.app import audio_bp
@@ -21,4 +22,5 @@ def home():
     return render_template("index.html")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.init_app(app)
+    socketio.run(app, debug=True)
