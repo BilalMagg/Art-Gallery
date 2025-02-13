@@ -143,18 +143,26 @@ body {
 
 .content-left {
   flex: 1;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+  /* border: 1px solid black; */
 }
 
 h1 {
   font-size: clamp(2.5rem, 5vw, 3.5rem);
   line-height: 1.1;
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
+  text-align: center;
 }
 
 .button-group {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
+  justify-content: center;
 }
 
 .btn {
@@ -198,33 +206,75 @@ h1 {
 
 .hero-graphics {
   position: relative;
-  width: 65%;
+  width: 100%;
   aspect-ratio: 1;
 }
 
 .squares-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  width: 100%;
-  height: 100%;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 65%;
+    height: 65%;
+    margin: auto;
+    /* Add top margin to move squares down */
+    /* margin-top: 15%; */
 }
 
 .square {
-  position: relative;
-  border-radius: 1rem;
-  background: var(--square-gradient);
-  overflow: hidden;
-  transition: transform 0.3s ease;
-  animation: float 3s ease-in-out infinite alternate;
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    animation: float 3s ease-in-out infinite alternate;
 }
 
-.square:nth-child(2) { animation-delay: 0.5s; }
-.square:nth-child(3) { animation-delay: 1s; }
-.square:nth-child(4) { animation-delay: 1.5s; }
+.square1, .square2 {
+  margin-top: 30%;
+}
 
-.square:hover {
-  transform: translateY(-10px);
+.square3, .square4 {
+  margin-bottom: -20%;
+}
+
+.square::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../roman-background.jpg');
+    background-size: 200% 200%;
+    transition: transform 0.3s ease;
+}
+
+.square1::before { background-position: 0 0; }
+.square2::before { background-position: 100% 0; }
+.square3::before { background-position: 0 100%; }
+.square4::before { background-position: 100% 100%; }
+
+.square:hover::before {
+  transform: scale(1.1);
+}
+
+.square::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* Reduce the opacity of the overlay to make the image lighter */
+    background: linear-gradient(135deg, rgba(31, 41, 55, 0.3), rgba(17, 24, 39, 0.3));
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+}
+
+.square:hover::after {
+    opacity: 0.1;
 }
 
 .model-container {
@@ -233,7 +283,7 @@ h1 {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 2;
 }
 
 #threejs-canvas {
@@ -242,6 +292,7 @@ h1 {
   display: block;
 }
 
+/* Keep the existing animation for .square */
 @keyframes float {
   0% {
       transform: translateY(0) rotate(0deg);
@@ -250,6 +301,11 @@ h1 {
       transform: translateY(-10px) rotate(3deg);
   }
 }
+
+/* Adjust the delay for each square */
+.square:nth-child(2) { animation-delay: 0.5s; }
+.square:nth-child(3) { animation-delay: 1s; }
+.square:nth-child(4) { animation-delay: 1.5s; }
 
 /* Social Links */
 .social-links {
