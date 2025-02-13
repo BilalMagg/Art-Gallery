@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import tensorflow_hub as hub
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, Blueprint
 import os
 
 def load_and_process_image(image_path, max_dim=512):
@@ -25,40 +25,32 @@ def style_transfer(content_path, style_path):
     
     output = np.squeeze(stylized_image.numpy()) * 255
     output = np.clip(output, 0, 255).astype('uint8')
-    output_path = 'static/output.jpg'
+    output_path = 'Apps/ML/static/output.jpg'
     cv2.imwrite(output_path, cv2.cvtColor(output, cv2.COLOR_RGB2BGR))
     return output_path
 
-app = Flask(__name__)
-UPLOAD_FOLDER = 'uploads'
+# app = Flask(__name__)
+ml_bp = Blueprint("ml",__name__,template_folder="templates",static_folder="static")
+UPLOAD_FOLDER = 'Apps/ML/static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-@app.route('/', methods=['GET', 'POST'])
+@ml_bp.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
         content_file = request.files['content_image']
         style_file = request.files['style_image']
         
         if content_file and style_file:
-            content_path = os.path.join(app.config['UPLOAD_FOLDER'], content_file.filename)
-            style_path = os.path.join(app.config['UPLOAD_FOLDER'], style_file.filename)
+            content_path = os.path.join(UPLOAD_FOLDER, content_file.filename)
+            style_path = os.path.join(UPLOAD_FOLDER, style_file.filename)
             content_file.save(content_path)
             style_file.save(style_path)
             
             output_path = style_transfer(content_path, style_path)
             return f'<h1>Style Transfer Complete!</h1><img src="/{output_path}" width="512">'
     
-    return '''
-    <h1>Neural Style Transfer</h1>
-    <form method="post" enctype="multipart/form-data">
-        <label>Upload Content Image:</label>
-        <input type="file" name="content_image" required><br><br>
-        <label>Upload Style Image:</label>
-        <input type="file" name="style_image" required><br><br>
-        <input type="submit" value="Apply Style">
-    </form>
-    '''
+    return render_template("index_ml.html")
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
