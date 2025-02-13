@@ -1,100 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Art Gallery Web App</title>
-  
-  <!-- Your existing home page CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
-  <!-- Temple-specific CSS (see below) -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style_temple.css') }}">
-
-  <!-- Three.js and extras -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Gallery</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js"></script>
 </head>
-
 <body>
-  <div class="container">
-    <header>
-      <nav>
-        <div class="logo">
-          <svg viewBox="0 0 24 24" class="logo-icon">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-          </svg>
-          <span>Art Gallery</span>
-        </div>
-        
-        <div class="nav-links">
-          <a href="/shapes">Shapes</a>
-          <a href="/visualization">Data</a>
-          <a href="/images">Images</a>
-          <a href="/audios">Audio</a>
-          <a href="/ml">ML</a>
-        </div>
+    <div class="page-container">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" class="logo-icon">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                </svg>
+                <span>Art Gallery</span>
+            </div>
+            
+            <div class="nav-links">
+                <a href="/shapes">Shapes</a>
+                <a href="/visualization">Data</a>
+                <a href="/images">Images</a>
+                <a href="/audio">Audio</a>
+                <a href="/ml">ML</a>
+            </div>
 
-        <div class="nav-icons">
-          <button class="icon-button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="M21 21l-4.35-4.35"></path>
-            </svg>
-          </button>
-          <button class="icon-button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-          </button>
-        </div>
-      </nav>
-    </header>
+            <div class="nav-icons">
+                <button class="icon-button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <button class="icon-button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
 
-    <main>
-      <div class="hero">
-        <div class="hero-content">
-          <h1>Discover the world of digital art creation</h1>
-          <div class="quote-container">
-            <p class="quote">"{{ quote['quote'] }}"</p>
-            <p class="author">- {{ quote['author'] }}</p>
-            <p class="meaning">{{ quote['meaning'] }}</p>
-          </div>
-          <div class="cta-buttons">
-            <button class="btn primary">Start Creating</button>
-            <button class="btn secondary">Learn More</button>
-          </div>
-          <p class="subtitle">No account needed to try our basic tools</p>
+        <!-- Quote Section -->
+        <div class="quote-section">
+            <p class="quote-text">"Facilius est mortem voluntariam invenire quam dolorem patienter tolerare."</p>
+            <p class="quote-author">- Julius Caesar</p>
+            <p class="quote-meaning">It is easier to find men who will volunteer to die than to find those who are willing to endure pain with patience.</p>
         </div>
 
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-left">
+                <h1>Discover the world of digital art creation</h1>
+                <div class="button-group">
+                    <button class="btn primary">Start Creating</button>
+                    <button class="btn secondary">Learn More</button>
+                </div>
+                <p class="subtitle">No account needed to try our basic tools</p>
+            </div>
 
-        
-        
-        <!-- Right side: squares + the 3D model overlay -->
-        <div class="hero-graphics">
-          <div class="graphics-grid">
-            <div class="graphic-item purple black"></div>
-            <div class="graphic-item blue black"></div>
-            <div class="graphic-item green black"></div>
-            <div class="graphic-item yellow black"></div>
-          </div>
-
-          <!-- 3D model container on top of squares -->
-          <div class="model-container">
-            <canvas id="threejs-canvas"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <div class="social-links">
-        <!-- Your social icons or anything else -->
-      </div>
-    </main>
-  </div>
-
-  <!-- Load your custom 3D JS last -->
-  <script src="{{ url_for('static', filename='js/main_temple.js') }}"></script>
+            <div class="content-right">
+                <div class="squares-container">
+                    <div class="square square1">
+                        <canvas class="model-canvas"></canvas>
+                    </div>
+                    <div class="square square2">
+                        <canvas class="model-canvas"></canvas>
+                    </div>
+                    <div class="square square3">
+                        <canvas class="model-canvas"></canvas>
+                    </div>
+                    <div class="square square4">
+                        <canvas class="model-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 </body>
 </html>
