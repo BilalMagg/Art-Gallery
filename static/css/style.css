@@ -135,8 +135,8 @@ body {
   display: flex;
   align-items: center;
   padding: 0 2rem;
-  gap: 7rem;
-  max-width: 1200px;
+  gap: 4rem;
+  max-width: 1400px;
   margin: 0 auto;
   width: 100%;
 }
@@ -190,18 +190,24 @@ h1 {
   color: var(--text-secondary);
 }
 
-/* Squares Grid */
+/* Hero Graphics */
 .content-right {
   flex: 1;
   position: relative;
+}
+
+.hero-graphics {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
 }
 
 .squares-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-  width: 70%;
-  aspect-ratio: 1;
+  width: 100%;
+  height: 100%;
 }
 
 .square {
@@ -221,12 +227,19 @@ h1 {
   transform: translateY(-10px);
 }
 
-.model-canvas {
+.model-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 1;
+}
+
+#threejs-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 @keyframes float {
@@ -236,6 +249,28 @@ h1 {
   100% {
       transform: translateY(-10px) rotate(3deg);
   }
+}
+
+/* Social Links */
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.social-icon {
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.social-icon:hover {
+  color: var(--primary-color);
+}
+
+.social-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 /* Responsive Design */
@@ -254,7 +289,7 @@ h1 {
       justify-content: center;
   }
 
-  .squares-container {
+  .hero-graphics {
       max-width: 500px;
       margin: 0 auto;
   }
@@ -271,5 +306,18 @@ h1 {
 
   .main-content {
       padding: 1rem;
+  }
+
+  .quote-section {
+      height: auto;
+      padding: 1rem 0;
+  }
+
+  .quote-text {
+      font-size: 0.9rem;
+  }
+
+  .quote-author, .quote-meaning {
+      font-size: 0.8rem;
   }
 }
