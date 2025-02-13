@@ -1,0 +1,72 @@
+/* ========== Hero layout ========== */
+.hero {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2rem 0;
+  }
+  
+  .hero-content {
+    flex: 1;
+    max-width: 600px;
+    padding: 2rem;
+  }
+  
+  .hero-graphics {
+    flex: 1;
+    position: relative; /* .model-container can be absolute */
+    min-height: 450px;  /* ensures there's space for squares + model */
+    margin-right: 2rem; /* adjust as you like */
+  }
+  
+  /* ========== Squares grid ========== */
+  .graphics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+    position: relative;
+    z-index: 0; /* squares behind the 3D model */
+  }
+  
+  /* SQUARE SIZE: tweak below to make them bigger/smaller */
+  .graphic-item {
+    width: 200px;
+    height: 200px;
+    border-radius: 8px;
+    background: #333;
+  }
+  
+  /* SQUARE COLORS: change these to whatever you like */
+  .purple {
+    background: linear-gradient(135deg, #000000 0%, #3c3c3c 100%);
+  }
+  .blue {
+    background: linear-gradient(135deg, #000000 0%, #3c3c3c 100%);
+  }
+  .green {
+    background: linear-gradient(135deg, #000000 0%, #3c3c3c 100%);
+  }
+  .yellow {
+    background: linear-gradient(135deg, #000000 0%, #3c3c3c 100%);
+  }
+  .black {
+    opacity: 0.9;
+  }
+  
+  /* ========== 3D model overlay ========== */
+  .model-container {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    /* Do NOT set pointer-events: none if you want to orbit the camera */
+  }
+  
+  #threejs-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
