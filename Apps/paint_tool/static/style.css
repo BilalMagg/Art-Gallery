@@ -299,6 +299,21 @@ nav {
   color: var(--greek-dark);
 }
 
+.save-gallery-btn {
+  background-color: #FFD700;
+  color: black;
+  border: none;
+  padding: 10px 15px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.save-gallery-btn:hover {
+  background-color: #E6C200;
+}
+
 /* Canvas Container */
 #canvas-container {
   flex-grow: 1;

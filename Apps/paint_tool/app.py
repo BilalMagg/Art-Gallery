@@ -1,9 +1,10 @@
-from flask import Flask, render_template, Blueprint
+from flask import Flask, render_template, Blueprint, jsonify, request
 from flask_socketio import SocketIO, emit
 from Apps.paint_tool.free_draw.app import free_draw_bp,socketio
 from Apps.paint_tool.algo_draw.algo_draw import algo_draw_bp
 import pygame
 import os
+import base64
 import time
 
 # app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -22,9 +23,36 @@ def home():
 # def algo_draw():
 #     return render_template("index_shape.html")
 
-# @shapes_bp.route("/free_draw")
-# def free_draw():
-#     return render_template("free_draw.html")  # Redirect to the old shape page
+@shapes_bp.route("/free_draw_js")
+def free_draw_js():
+    return render_template("index_shape.html")
+
+@shapes_bp.route('/save_to_gallery', methods=['POST'])
+def save_to_gallery():
+    data = request.get_json()
+    image_data = data.get("image")
+
+    if not image_data:
+        return jsonify({"message": "No image data received"}), 400
+
+    # Decode base64 image
+    image_data = image_data.replace("data:image/png;base64,", "")
+    image_bytes = base64.b64decode(image_data)
+
+    # Ensure gallery folder exists
+    gallery_folder = "static/gallery"
+    os.makedirs(gallery_folder, exist_ok=True)
+
+    # Generate unique filename
+    count = len(os.listdir(gallery_folder)) + 1
+    filename = f"shape_{count}.png"
+    filepath = os.path.join(gallery_folder, filename)
+
+    # Save the image
+    with open(filepath, "wb") as f:
+        f.write(image_bytes)
+
+    return jsonify({"message": f"Saved as {filename}!"})
 
 # Register Blueprint
 # app.register_blueprint(shapes_bp, url_prefix="/free_draw")

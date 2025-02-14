@@ -116,12 +116,21 @@
                 <!-- Canvas container -->
                 <div id="canvas-container">
                     <canvas id="canvas" width="700" height="500"></canvas>
-                    <button class="download-btn" onclick="downloadCanvas()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                        </svg>
-                        Download Artwork
-                    </button>
+                    <div class="btns">
+                        <button class="download-btn" onclick="downloadCanvas()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                            </svg>
+                            Download Artwork
+                        </button>
+                        <button class="save-gallery-btn" onclick="saveToGallery()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L2 12h3v8h14v-8h3L12 2z"/>
+                                <path d="M9 21v-6h6v6"/>
+                            </svg>
+                            Save to Gallery
+                        </button>          
+                    </div>          
                 </div>
             </div>
         </main>
