@@ -3,19 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery</title>
+    <title>Roman Art Gallery</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato&display=swap');
+
+        body {
+            font-family: 'Lato', sans-serif;
+            color: #3c2f2f;
+            margin: 0;
+            padding: 0;
+            background: 
+                linear-gradient(180deg, #FFF9DD 0%, #e0cbafcc 100%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d2b48c' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            /* background-color: rgba(210, 180, 140, 0.3); Tan color with transparency */
+            backdrop-filter: blur(10px);
+            /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); */
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            text-align: center;
+            color: #5d4037; /* Darker brown for better contrast */
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .nav-item {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: #5d4037;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 5px 10px;
+            border: 2px solid #5d4037;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-item:hover {
+            background-color: #5d4037;
+            color: #f0e6d2;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(93, 64, 55, 0.1), rgba(93, 64, 55, 0.6));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
+
+        .gallery-item-title {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            color: #f0e6d2;
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .gallery-item:hover .gallery-item-title {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Gallery</h1>
+        <h1>Roman Art Gallery</h1>
+        <nav class="navigation">
+            <a href="/" class="nav-item">Home</a>
+            <a href="/images" class="nav-item">Images</a>
+            <a href="/visualization" class="nav-item">Data</a>
+            <a href="/audios" class="nav-item">Audios</a>
+            <a href="/ml" class="nav-item">ML</a>
+        </nav>
         <div class="gallery-grid">
             {% for image in images %}
                 <div class="gallery-item">
                     <img src="{{ url_for('static', filename='gallery/' + image) }}" alt="Artwork">
+                    <div class="gallery-item-title">{{ image.split('.')[0] }}</div>
                 </div>
             {% endfor %}
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            
+            galleryItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    this.classList.toggle('expanded');
+                    if (this.classList.contains('expanded')) {
+                        this.style.transform = 'scale(1.5)';
+                        this.style.zIndex = '1000';
+                    } else {
+                        this.style.transform = '';
+                        this.style.zIndex = '';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
