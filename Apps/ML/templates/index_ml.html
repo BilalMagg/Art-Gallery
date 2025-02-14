@@ -1,18 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maching Learning</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Style Transfer - Art Gallery</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap');
+
+        :root {
+            --primary: rgba(139, 69, 19, 0.8);
+            --secondary: rgba(210, 180, 140, 0.5);
+            --background: #f9f6f1;
+            --text: #3c2f2f;
+            --accent: rgba(180, 150, 110, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, #fff 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .page-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            fill: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text);
+            padding: 0.5rem;
+        }
+
+        .icon-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .main-content {
+            padding: 4rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        form {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--secondary);
+            border-radius: 4px;
+            font-family: 'Lato', sans-serif;
+        }
+
+        input[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, var(--primary) 0%, rgba(139, 69, 19, 0.9) 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .main-nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                margin-top: 1rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .nav-icons {
+                margin-top: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            form {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Neural Style Transfer</h1>
-  <form method="post" enctype="multipart/form-data">
-      <label>Upload Content Image:</label>
-      <input type="file" name="content_image" required><br><br>
-      <label>Upload Style Image:</label>
-      <input type="file" name="style_image" required><br><br>
-      <input type="submit" value="Apply Style">
-  </form>
+    <div class="page-container">
+        <nav class="main-nav">
+            <a href="/" class="logo">
+                <svg viewBox="0 0 24 24" class="logo-icon">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                </svg>
+                Art Gallery
+            </a>
+            
+            <div class="nav-links">
+                <a href="/shapes">Shapes</a>
+                <a href="/visualization">Data</a>
+                <a href="/images">Images</a>
+                <a href="/audios">Audio</a>
+                <a href="/ml">ML</a>
+            </div>
+
+            <div class="nav-icons">
+                <button class="icon-button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <button class="icon-button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <h1>Neural Style Transfer</h1>
+            <form method="post" enctype="multipart/form-data">
+                <label for="content-image">Upload Content Image:</label>
+                <input type="file" id="content-image" name="content_image" required>
+                
+                <label for="style-image">Upload Style Image:</label>
+                <input type="file" id="style-image" name="style_image" required>
+                
+                <input type="submit" value="Apply Style">
+            </form>
+        </main>
+    </div>
 </body>
 </html>
+
