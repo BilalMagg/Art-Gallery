@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, Blueprint
+from flask import Flask, render_template, request, redirect, url_for, send_file, Blueprint, jsonify
 import os,sys
 import cv2
 # sys.path.append(os.path.abspath('../openCV'))
@@ -72,6 +72,42 @@ def download_img(filename):
         return "File Not Found !!",404
     
     return send_file(file_path, as_attachment = True)
+
+@image_bp.route('/add_to_gallery', methods=['POST'])
+def add_to_gallery():
+    data = request.get_json()
+    filename = data.get("filename")
+
+    if not filename:
+        return jsonify({"message": "No filename provided"}), 400
+
+    src_path = os.path.join('Apps/image_manipulation/static/filtered', filename)
+    dest_folder = "
+    static/gallery"
+    os.makedirs(dest_folder, exist_ok=True)  # Ensure gallery folder exists
+
+    # Check if file already exists in the gallery
+    dest_path = os.path.join(dest_folder, filename)
+    if os.path.exists(dest_path):
+        base, ext = os.path.splitext(filename)
+        counter = 1
+        new_filename = f"{base}_{counter}{ext}"
+        new_dest_path = os.path.join(dest_folder, new_filename)
+
+        # Keep incrementing until we find a unique filename
+        while os.path.exists(new_dest_path):
+            counter += 1
+            new_filename = f"{base}_{counter}{ext}"
+            new_dest_path = os.path.join(dest_folder, new_filename)
+
+        dest_path = new_dest_path  # Use the new unique filename
+
+    # Move the file
+    try:
+        os.rename(src_path, dest_path)  # Move file to the gallery
+        return jsonify({"message": f"Image added to gallery as {os.path.basename(dest_path)}!"})
+    except Exception as e:
+        return jsonify({"message": f"Error: {str(e)}"}), 500
 
 # if __name__ == "__main__":
 #     image_bp.run(debug=True)

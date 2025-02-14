@@ -52,6 +52,13 @@ def home():
     quote = random.choice(quotes)
     return render_template("index.html", quote=quote)
 
+@app.route('/gallery')
+def gallery():
+    gallery_folder = "static/gallery"
+    images = os.listdir(gallery_folder) if os.path.exists(gallery_folder) else []
+    return render_template("gallery.html", images=images)
+
+
 if __name__ == "__main__":
     socketio.init_app(app)
     socketio.run(app, debug=True)

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Gallery</h1>
+        <div class="gallery-grid">
+            {% for image in images %}
+                <div class="gallery-item">
+                    <img src="{{ url_for('static', filename='gallery/' + image) }}" alt="Artwork">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

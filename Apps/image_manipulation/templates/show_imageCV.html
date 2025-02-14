@@ -66,6 +66,7 @@
                         <img src="{{ url_for('images.static', filename= 'filtered/' + filtered_filename) }}" alt="Filtered Image">
                     </div>
                     <a href="{{ url_for('images.download_img', filename= filtered_filename) }}" class="btn primary download-btn">Download</a>
+                    <button id="addBtn" class="btn primary download-btn add-btn">Add to Gallery</button>
                 </div>
                 {% else %}
                 <div class="image-box result">
@@ -103,6 +104,23 @@
                     button.classList.remove("active");
                 }
             });
+        });
+        document.getElementById("addBtn").addEventListener("click", function () {
+            let filename = "{{ filtered_filename }}";
+
+            if (!filename) {
+                alert("No image to add!");
+                return;
+            }
+
+            fetch("/images/add_to_gallery", {
+                method: "POST",
+                body: JSON.stringify({ filename: filename }),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error("Error:", error));
         });
     </script>
        
