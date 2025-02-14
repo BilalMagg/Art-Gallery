@@ -66,7 +66,7 @@ def index():
             df = pd.read_csv(file)
             fig = create_3d_globe(df, color_scale)
             graph_html = fig.to_html(full_html=False)
-    return render_template("index.html", graph_html=graph_html)
+    return render_template("index_data.html", graph_html=graph_html)
 
 if __name__ == "__main__":
     app.run(debug=True)

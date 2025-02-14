@@ -24,13 +24,13 @@ document.addEventListener('DOMContentLoaded', function() {
       formData.append('file', file);
 
       try {
-          const response = await fetch('/upload', {
+          const response = await fetch('/visualization/upload', {
               method: 'POST',
               body: formData
           });
-
+          console.log(response)
           const data = await response.json();
-
+          console.log("Data")
           if (data.error) {
               alert(data.error);
               return;
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!currentFilename || !this.value) return;
 
       try {
-          const response = await fetch('/get_time_values', {
+          const response = await fetch('/visualization/get_time_values', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json'
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
       };
 
       try {
-          const response = await fetch('/visualize', {
+          const response = await fetch('/visualization/visualize', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json'
