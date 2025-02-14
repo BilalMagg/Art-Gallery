@@ -3,69 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Visualization Platform</title>
+    <title>Data Visualization - Grecian Gallery</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('visualization.static', filename='css/style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Data Visualization Platform</h1>
-            <p>Upload your dataset and create interactive visualizations</p>
-        </header>
+    <nav>
+        <div class="nav-content">
+            <a href="/" class="logo">
+                <svg viewBox="0 0 24 24" class="logo-icon">
+                    <circle cx="12" cy="12" r="10" fill="currentColor"/>
+                </svg>
+                <span>Grecian Gallery</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/shapes">Shapes</a>
+                <a href="/visualization">Data</a>
+                <a href="/images">Images</a>
+                <a href="/audio">Audio</a>
+                <a href="/ml">ML</a>
+            </div>
+        </div>
+    </nav>
 
-        <main>
-            <div class="upload-section">
-                <form id="uploadForm" class="config-panel">
+    <div class="container">
+        <h1>Data Visualization</h1>
+        <p class="subtitle">Transform your data into interactive visualizations</p>
+
+        <div class="card upload-section">
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label for="fileInput">
+                        <span class="label-text">Upload Dataset (CSV)</span>
+                        <span class="label-hint">Choose a CSV file to visualize</span>
+                    </label>
+                    <input type="file" id="fileInput" accept=".csv" required>
+                </div>
+
+                <div id="configSection" class="hidden">
                     <div class="form-group">
-                        <label for="fileInput">Upload Dataset (CSV)</label>
-                        <input type="file" id="fileInput" accept=".csv" required>
+                        <label for="vizType">
+                            <span class="label-text">Visualization Type</span>
+                            <span class="label-hint">Select how you want to visualize your data</span>
+                        </label>
+                        <select id="vizType" required>
+                            <option value="">Select a visualization type</option>
+                            <optgroup label="3D Visualizations">
+                                <option value="globe">3D Globe</option>
+                                <option value="scatter3d">3D Scatter Plot</option>
+                            </optgroup>
+                            <optgroup label="2D Charts">
+                                <option value="bar">Bar Chart</option>
+                                <option value="line">Line Chart</option>
+                                <option value="box">Box Plot</option>
+                                <option value="histogram">Histogram</option>
+                                <option value="heatmap">Heatmap</option>
+                            </optgroup>
+                        </select>
                     </div>
 
-                    <div id="configSection" class="hidden">
-                        <div class="form-group">
-                            <label for="vizType">Visualization Type</label>
-                            <select id="vizType" required>
-                                <option value="globe">3D Globe</option>
-                                <option value="scatter3d">3D Scatter</option>
-                                <option value="line">Line Chart</option>
-                                <option value="bar">Bar Chart</option>
-                            </select>
-                        </div>
-
-                        <div id="globeControls" class="form-group">
+                    <!-- Visualization Controls Container -->
+                    <div id="vizControls" class="hidden">
+                        <!-- Globe Controls -->
+                        <div id="globeControls" class="graph-controls grid-2 hidden">
                             <div class="form-group">
-                                <label for="countryColumn">Country Column</label>
-                                <select id="countryColumn" required></select>
+                                <label for="locationColumn">Location Column</label>
+                                <select id="locationColumn" required></select>
                             </div>
-                            
                             <div class="form-group">
                                 <label for="valueColumn">Value Column</label>
                                 <select id="valueColumn" required></select>
                             </div>
-                            
-                            <div id="timeControls" class="form-group hidden">
-                                <div class="form-group">
-                                    <label for="timeColumn">Time Column</label>
-                                    <select id="timeColumn"></select>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="timeValue">Select Time Period</label>
-                                    <select id="timeValue"></select>
-                                </div>
+                        </div>
+
+                        <!-- 3D Scatter Controls -->
+                        <div id="scatter3dControls" class="graph-controls grid-3 hidden">
+                            <div class="form-group">
+                                <label for="xColumn">X Axis</label>
+                                <select id="xColumn" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="yColumn">Y Axis</label>
+                                <select id="yColumn" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="zColumn">Z Axis</label>
+                                <select id="zColumn" required></select>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn">Generate Visualization</button>
-                    </div>
-                </form>
-            </div>
+                        <!-- 2D Chart Controls -->
+                        <div id="basic2DControls" class="graph-controls grid-2 hidden">
+                            <div class="form-group">
+                                <label for="xAxis">X Axis</label>
+                                <select id="xAxis" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="yAxis">Y Axis</label>
+                                <select id="yAxis" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="colorBy">Color By (Optional)</label>
+                                <select id="colorBy"></select>
+                            </div>
+                        </div>
 
-            <div id="visualization" class="visualization-container hidden">
-                <div id="plotOutput"></div>
-            </div>
-        </main>
+                        <!-- Single Variable Controls -->
+                        <div id="singleVarControls" class="graph-controls hidden">
+                            <div class="form-group">
+                                <label for="dataColumn">Data Column</label>
+                                <select id="dataColumn" required></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn generate-btn">
+                        <span class="btn-icon">📊</span>
+                        Generate Visualization
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="visualization" class="visualization-container hidden">
+            <div id="plotOutput"></div>
+        </div>
     </div>
 
     <script src="{{ url_for('visualization.static', filename='js/script.js') }}"></script>
