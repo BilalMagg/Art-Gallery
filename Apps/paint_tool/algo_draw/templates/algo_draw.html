@@ -1,83 +1,314 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Generative Art - Multiple Shapes & Fractals</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shape Creator - Generative Art</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato&display=swap');
+
+        :root {
+            --primary-color: #8b4513;
+            --secondary-color: #d2b48c;
+            --background-color: #f0e6d2;
+            --text-color: #3c2f2f;
+            --border-color: #8b4513;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: 
+                linear-gradient(135deg, rgba(240,230,210,0.8) 0%, rgba(234,205,163,0.8) 100%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d2b48c' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            color: var(--text-color);
+        }
+
+        .header {
+            background-color: rgba(210, 180, 140, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            font-family: 'Cinzel', serif;
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            border-color: var(--border-color);
+            background-color: rgba(139, 69, 19, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: rgba(210, 180, 140, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+        }
+
+        .controls {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            cursor: pointer;
+        }
+
+        .number-input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .button {
+            font-family: 'Cinzel', serif;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .button:hover {
+            background-color: #723a0f;
+        }
+
+        .preview {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .action-buttons .button {
+            width: auto;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Generative Art with Multiple Shapes & Fractals</h1>
+    <header class="header">
+        <nav class="nav">
+            <a href="#" class="logo">Grecian Gallery</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/Shapes" class="nav-link">Shapes</a>
+                <a href="/visualization" class="nav-link">Data</a>
+                <a href="/images" class="nav-link">Images</a>
+                <a href="/audios" class="nav-link">Audio</a>
+                <a href="/ml" class="nav-link">ML</a>
+            </div>
+        </nav>
+    </header>
 
-  <!-- Display generated image if available -->
-  {% if image_file %}
-    <p>Generated Image File: {{ image_file }}</p>
-    <img src="{{ url_for('shapes.algo_draw.static', filename=image_file) }}" 
-         alt="Generated Image"
-         style="border:1px solid #000; width:600px; height:auto;">
-  {% else %}
-    <p>No image generated yet.</p>
-  {% endif %}
+    <div class="container">
+        <h1>Shape Creator</h1>
+        <div class="content-wrapper">
+            <form method="POST" class="controls">
+                <div class="section">
+                    <h2>Shapes</h2>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="shapes" value="circle"> Circle
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="shapes" value="square"> Square
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="shapes" value="triangle"> Triangle
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="shapes" value="star"> Star
+                        </label>
+                    </div>
+                    <input type="number" name="shape_count" min="1" max="50" value="5" class="number-input">
+                </div>
 
-  <hr>
-  <!-- Form for user choices -->
-  <form method="POST">
-    <!-- SHAPES SECTION -->
-    <h2>Shapes</h2>
-    <p>Select which shapes you want to draw:</p>
-    <label>
-      <input type="checkbox" name="shapes" value="circle"> Circle
-    </label>
-    <label>
-      <input type="checkbox" name="shapes" value="square"> Square
-    </label>
-    <label>
-      <input type="checkbox" name="shapes" value="triangle"> Triangle
-    </label>
-    <label>
-      <input type="checkbox" name="shapes" value="star"> Star
-    </label>
+                <div class="section">
+                    <h2>Fractals</h2>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="fractals" value="tree"> Tree
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="fractals" value="sierpinski"> Sierpinski
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="fractals" value="koch"> Koch
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="fractals" value="squares"> Squares
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="fractals" value="circles"> Circles
+                        </label>
+                    </div>
+                    <input type="number" name="fractal_count" min="0" max="10" value="1" class="number-input">
+                </div>
 
-    <p>
-      <label for="shape_count">Number of each shape:</label>
-      <input type="number" name="shape_count" min="1" max="50" value="5">
-    </p>
+                <div class="section">
+                    <h2>Color</h2>
+                    <select name="color">
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                        <option value="random">Random</option>
+                    </select>
+                </div>
 
-    <!-- FRACTALS SECTION -->
-    <h2>Fractals</h2>
-    <p>Select which fractals you want to include:</p>
-    <label>
-      <input type="checkbox" name="fractals" value="tree"> Tree
-    </label>
-    <label>
-      <input type="checkbox" name="fractals" value="sierpinski"> Sierpinski
-    </label>
-    <label>
-      <input type="checkbox" name="fractals" value="koch"> Koch
-    </label>
-    <label>
-      <input type="checkbox" name="fractals" value="squares"> Fractal Squares
-    </label>
-    <label>
-      <input type="checkbox" name="fractals" value="circles"> Fractal Circles
-    </label>
+                <button type="submit" class="button">Generate</button>
+            </form>
 
-    <p>
-      <label for="fractal_count">Number of each fractal:</label>
-      <input type="number" name="fractal_count" min="0" max="10" value="1">
-    </p>
+            <div class="preview">
+                {% if image_file %}
+                    <img src="{{ url_for('shapes.algo_draw.static', filename=image_file) }}" alt="Generated Art">
+                    <div class="action-buttons">
+                        <a href="{{ url_for('shapes.algo_draw.static', filename=image_file) }}" download class="button">Download</a>
+                        <button onclick="saveToGallery('{{ image_file }}')" class="button">Save to Gallery</button>
+                    </div>
+                {% else %}
+                    <p>No image generated yet. Select options and click Generate to create art.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
-    <!-- COLOR SECTION -->
-    <h2>Color</h2>
-    <p>
-      <label for="color">Color (or random):</label>
-      <select name="color">
-        <option value="red">Red</option>
-        <option value="blue">Blue</option>
-        <option value="green">Green</option>
-        <option value="random">Random</option>
-      </select>
-    </p>
-
-    <button type="submit">Generate</button>
-  </form>
+    <script>
+        function saveToGallery(filename) {
+            fetch('/shapes/algo_draw/save-to-gallery', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ filename: filename })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Image saved to gallery successfully!');
+                } else {
+                    alert('Error saving image to gallery');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error saving image to gallery');
+            });
+        }
+    </script>
 </body>
 </html>

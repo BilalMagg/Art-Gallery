@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, Blueprint
+from flask import Flask, render_template, request, Blueprint, jsonify
 import os
 import random
 import pygame
 import time
+import shutil
 
 # app = Flask(__name__, template_folder='templates')
 algo_draw_bp = Blueprint("algo_draw",__name__,template_folder="templates",static_folder="static")
@@ -278,6 +279,27 @@ def index():
 
     return render_template("algo_draw.html", image_file=image_file)
 
+@algo_draw_bp.route("/save-to-gallery", methods=["POST"])
+def save_to_gallery():
+    try:
+        data = request.get_json()
+        filename = data.get('filename')
+        if not filename:
+            return jsonify({"success": False, "error": "No filename provided"}), 400
+
+        # Source path (where the generated image is)
+        source_path = os.path.join("Apps/paint_tool/algo_draw/static", filename)
+        
+        # Destination path (gallery folder)
+        dest_path = os.path.join("static/gallery", filename)
+        
+        # Copy the file to the gallery
+        shutil.copy2(source_path, dest_path)
+        
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    
 
 # if __name__ == "__main__":
 #     app.run(debug=True)
