@@ -1,13 +1,14 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Blueprint
 import os
 import random
 import pygame
 import time
 
-app = Flask(__name__, template_folder='templates')
+# app = Flask(__name__, template_folder='templates')
+algo_draw_bp = Blueprint("algo_draw",__name__,template_folder="templates",static_folder="static")
 
 # Ensure 'static' directory exists
-os.makedirs("static", exist_ok=True)
+os.makedirs("Apps/paint_tool/algo_draw/static", exist_ok=True)
 
 pygame.init()
 
@@ -250,14 +251,14 @@ def generate_image(selected_shapes, shape_count, fractals, fractal_count, user_c
     # Save the final image
     timestamp = int(time.time() * 1000)
     filename = f"generated_{timestamp}.png"
-    filepath = os.path.join("static", filename)
+    filepath = os.path.join("Apps/paint_tool/algo_draw/static", filename)
     pygame.image.save(surface, filepath)
     return filename
 
 ##################################################
 #              FLASK ROUTE
 ##################################################
-@app.route("/", methods=["GET", "POST"])
+@algo_draw_bp.route("/", methods=["GET", "POST"])
 def index():
     image_file = None
     print("DEBUG: Entered index route.")
@@ -278,5 +279,5 @@ def index():
     return render_template("algo_draw.html", image_file=image_file)
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)

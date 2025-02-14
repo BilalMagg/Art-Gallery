@@ -1,6 +1,7 @@
 from flask import Flask, render_template, Blueprint
 from flask_socketio import SocketIO, emit
 from Apps.paint_tool.free_draw.app import free_draw_bp,socketio
+from Apps.paint_tool.algo_draw.algo_draw import algo_draw_bp
 import pygame
 import os
 import time
@@ -11,14 +12,15 @@ import time
 # Define Blueprint for shapes
 shapes_bp = Blueprint("shapes", __name__, template_folder="templates", static_folder="static")
 shapes_bp.register_blueprint(free_draw_bp, url_prefix="/free_draw")
+shapes_bp.register_blueprint(algo_draw_bp, url_prefix = "/algo_draw")
 
 @shapes_bp.route("/")   
 def home():
     return render_template("RLogin.html")
 
-@shapes_bp.route("/algo_draw")
-def algo_draw():
-    return render_template("index_shape.html")
+# @shapes_bp.route("/algo_draw")
+# def algo_draw():
+#     return render_template("index_shape.html")
 
 # @shapes_bp.route("/free_draw")
 # def free_draw():
