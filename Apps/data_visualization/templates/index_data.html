@@ -33,93 +33,68 @@
 
         <div class="card upload-section">
             <form id="uploadForm">
+                <!-- Data Source Selection -->
                 <div class="form-group">
-                    <label for="fileInput">
-                        <span class="label-text">Upload Dataset (CSV)</span>
-                        <span class="label-hint">Choose a CSV file to visualize</span>
-                    </label>
-                    <input type="file" id="fileInput" accept=".csv" required>
+                    <label for="dataSource">Choose Data Source</label>
+                    <select id="dataSource" required>
+                        <option value="">Select data source</option>
+                        <option value="preset">Use Preset Data (Internet Usage Dataset)</option>
+                        <option value="upload">Upload Your Own Dataset</option>
+                    </select>
                 </div>
 
+                <!-- File Upload Section -->
+                <div id="uploadSection" class="hidden">
+                    <div class="form-group">
+                        <label for="fileInput">Upload Dataset (CSV)</label>
+                        <input type="file" id="fileInput" accept=".csv">
+                    </div>
+                </div>
+
+                <!-- Preset Data Controls -->
+                <div id="presetControls" class="hidden">
+                    <div class="form-group">
+                        <label for="yearSelect">Select Year</label>
+                        <select id="yearSelect" required></select>
+                    </div>
+                </div>
+
+                <!-- Visualization Configuration -->
                 <div id="configSection" class="hidden">
                     <div class="form-group">
-                        <label for="vizType">
-                            <span class="label-text">Visualization Type</span>
-                            <span class="label-hint">Select how you want to visualize your data</span>
-                        </label>
-                        <select id="vizType" required>
-                            <option value="">Select a visualization type</option>
-                            <optgroup label="3D Visualizations">
-                                <option value="globe">3D Globe</option>
-                                <option value="scatter3d">3D Scatter Plot</option>
-                            </optgroup>
-                            <optgroup label="2D Charts">
-                                <option value="bar">Bar Chart</option>
-                                <option value="line">Line Chart</option>
-                                <option value="box">Box Plot</option>
-                                <option value="histogram">Histogram</option>
-                                <option value="heatmap">Heatmap</option>
-                            </optgroup>
-                        </select>
+                        <label for="vizType">Visualization Type</label>
+                        <select id="vizType" required></select>
                     </div>
 
-                    <!-- Visualization Controls Container -->
-                    <div id="vizControls" class="hidden">
-                        <!-- Globe Controls -->
-                        <div id="globeControls" class="graph-controls grid-2 hidden">
-                            <div class="form-group">
-                                <label for="locationColumn">Location Column</label>
-                                <select id="locationColumn" required></select>
-                            </div>
-                            <div class="form-group">
-                                <label for="valueColumn">Value Column</label>
-                                <select id="valueColumn" required></select>
-                            </div>
+                    <!-- Custom Upload Controls -->
+                    <div id="customControls" class="hidden">
+                        <div class="form-group">
+                            <label for="xAxis">X Axis</label>
+                            <select id="xAxis" required></select>
                         </div>
-
-                        <!-- 3D Scatter Controls -->
-                        <div id="scatter3dControls" class="graph-controls grid-3 hidden">
-                            <div class="form-group">
-                                <label for="xColumn">X Axis</label>
-                                <select id="xColumn" required></select>
-                            </div>
-                            <div class="form-group">
-                                <label for="yColumn">Y Axis</label>
-                                <select id="yColumn" required></select>
-                            </div>
-                            <div class="form-group">
-                                <label for="zColumn">Z Axis</label>
-                                <select id="zColumn" required></select>
-                            </div>
+                        <div class="form-group">
+                            <label for="yAxis">Y Axis</label>
+                            <select id="yAxis" required></select>
                         </div>
-
-                        <!-- 2D Chart Controls -->
-                        <div id="basic2DControls" class="graph-controls grid-2 hidden">
-                            <div class="form-group">
-                                <label for="xAxis">X Axis</label>
-                                <select id="xAxis" required></select>
-                            </div>
-                            <div class="form-group">
-                                <label for="yAxis">Y Axis</label>
-                                <select id="yAxis" required></select>
-                            </div>
-                            <div class="form-group">
-                                <label for="colorBy">Color By (Optional)</label>
-                                <select id="colorBy"></select>
-                            </div>
+                        <div class="form-group">
+                            <label for="colorBy">Color By (Optional)</label>
+                            <select id="colorBy"></select>
                         </div>
+                    </div>
 
-                        <!-- Single Variable Controls -->
-                        <div id="singleVarControls" class="graph-controls hidden">
-                            <div class="form-group">
-                                <label for="dataColumn">Data Column</label>
-                                <select id="dataColumn" required></select>
-                            </div>
+                    <!-- Preset Data Controls -->
+                    <div id="presetVizControls" class="hidden">
+                        <div class="form-group">
+                            <label for="metricSelect">Select Metric</label>
+                            <select id="metricSelect">
+                                <option value="internet">Internet Users (%)</option>
+                                <option value="cellular">Cellular Subscription</option>
+                                <option value="broadband">Broadband Subscription</option>
+                            </select>
                         </div>
                     </div>
 
                     <button type="submit" class="btn generate-btn">
-                        <span class="btn-icon">📊</span>
                         Generate Visualization
                     </button>
                 </div>

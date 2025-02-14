@@ -10,12 +10,20 @@ data_bp = Blueprint("visualization", __name__, template_folder="templates", stat
 UPLOAD_FOLDER = "Apps/data_visualization/static/uploads"
 ALLOWED_EXTENSIONS = {'csv'}
 
+# Load preset data
+PRESET_DATA = pd.read_csv("Apps\data_visualization\static\data\Final.csv")
+AVAILABLE_YEARS = sorted(PRESET_DATA['Year'].unique().tolist())
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @data_bp.route('/', methods=['GET'])
 def index():
     return render_template('index_data.html')
+
+@data_bp.route('/get_preset_years', methods=['GET'])
+def get_preset_years():
+    return jsonify({"years": AVAILABLE_YEARS})
 
 @data_bp.route('/upload', methods=['POST'])
 def upload_file():
@@ -34,27 +42,14 @@ def upload_file():
         df = pd.read_csv(filepath)
         columns = df.columns.tolist()
         
-        # Detect numeric columns for various visualizations
         numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns.tolist()
-        
-        # Detect categorical columns
         categorical_columns = df.select_dtypes(include=['object']).columns.tolist()
-        
-        # Detect date columns
-        date_columns = [col for col in columns if 'date' in col.lower() or 'year' in col.lower()]
-        
-        # Detect location columns
-        location_columns = [col for col in columns if 'country' in col.lower() or 
-                          'city' in col.lower() or 'location' in col.lower() or 
-                          'code' in col.lower()]
         
         return jsonify({
             "filename": filename,
             "columns": columns,
             "numeric_columns": numeric_columns,
-            "categorical_columns": categorical_columns,
-            "date_columns": date_columns,
-            "location_columns": location_columns
+            "categorical_columns": categorical_columns
         })
     
     return jsonify({"error": "File type not allowed"}), 400
@@ -62,28 +57,70 @@ def upload_file():
 @data_bp.route('/visualize', methods=['POST'])
 def visualize():
     data = request.json
-    filename = data.get('filename')
     viz_type = data.get('viz_type')
+    data_source = data.get('data_source')
     
-    filepath = os.path.join(UPLOAD_FOLDER, filename)
-    df = pd.read_csv(filepath)
-    
-    fig = go.Figure()
-    
-    try:
+    if data_source == 'preset':
+        year = int(data.get('year'))
+        metric = data.get('metric', 'internet')
+        df = PRESET_DATA[PRESET_DATA['Year'] == year]
+        
         if viz_type == 'globe':
-            fig.add_trace(go.Choropleth(
-                locations=df[data['location_column']],
-                z=df[data['value_column']],
+            metric_map = {
+                'internet': 'Internet Users(%)',
+                'cellular': 'Cellular Subscription',
+                'broadband': 'Broadband Subscription'
+            }
+            metric_col = metric_map[metric]
+            
+            fig = go.Figure(data=go.Choropleth(
+                locations=df['Code'],
+                z=df[metric_col],
+                text=df['Entity'],
                 colorscale='Viridis',
-                colorbar_title=data['value_column']
+                colorbar_title=metric_col
             ))
             fig.update_layout(
                 geo=dict(showland=True, showcountries=True, projection_type='orthographic'),
-                title=f"Global Distribution of {data['value_column']}"
+                title=f"{metric_col} by Country ({year})"
             )
             
         elif viz_type == 'bar':
+            metric_col = 'Internet Users(%)' if metric == 'internet' else metric
+            df_sorted = df.nlargest(10, metric_col)
+            fig = px.bar(
+                df_sorted,
+                x='Entity',
+                y=metric_col,
+                title=f"Top 10 Countries by {metric_col} ({year})"
+            )
+            
+        elif viz_type == 'line':
+            # For line chart, we'll use all years
+            df_line = PRESET_DATA.copy()
+            fig = px.line(
+                df_line,
+                x='Year',
+                y='Internet Users(%)',
+                color='Entity',
+                title='Internet Usage Trends Over Time'
+            )
+            
+        elif viz_type == 'scatter':
+            fig = px.scatter(
+                df,
+                x='Cellular Subscription',
+                y='Internet Users(%)',
+                text='Entity',
+                title=f'Internet vs Cellular Usage ({year})'
+            )
+            
+    else:  # Custom upload
+        filename = data.get('filename')
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        df = pd.read_csv(filepath)
+        
+        if viz_type == 'bar':
             fig = px.bar(
                 df,
                 x=data['x_column'],
@@ -91,73 +128,12 @@ def visualize():
                 color=data.get('color_column'),
                 title=f"Bar Chart of {data['y_column']} by {data['x_column']}"
             )
-            
-        elif viz_type == 'line':
-            fig = px.line(
-                df,
-                x=data['x_column'],
-                y=data['y_column'],
-                color=data.get('color_column'),
-                title=f"Line Chart of {data['y_column']} over {data['x_column']}"
-            )
-            
-        elif viz_type == 'scatter3d':
-            fig = px.scatter_3d(
-                df,
-                x=data['x_column'],
-                y=data['y_column'],
-                z=data['z_column'],
-                color=data.get('color_column'),
-                title=f"3D Scatter Plot"
-            )
-            
-        elif viz_type == 'box':
-            fig = px.box(
-                df,
-                x=data['category_column'],
-                y=data['value_column'],
-                title=f"Box Plot of {data['value_column']} by {data['category_column']}"
-            )
-            
-        elif viz_type == 'histogram':
-            fig = px.histogram(
-                df,
-                x=data['value_column'],
-                nbins=30,
-                title=f"Histogram of {data['value_column']}"
-            )
-            
-        elif viz_type == 'heatmap':
-            pivot_table = pd.pivot_table(
-                df,
-                values=data['value_column'],
-                index=data['y_column'],
-                columns=data['x_column']
-            )
-            fig = px.imshow(
-                pivot_table,
-                title=f"Heatmap of {data['value_column']}"
-            )
-        
-        fig.update_layout(
-            template="plotly_white",
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)'
-        )
-        
-        return jsonify({"plot": fig.to_json()})
-        
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-@data_bp.route('/get_time_values', methods=['POST'])
-def get_time_values():
-    data = request.json
-    filename = data.get('filename')
-    time_column = data.get('time_column')
+        # Add other visualization types for custom uploads as needed
     
-    filepath = os.path.join(UPLOAD_FOLDER, filename)
-    df = pd.read_csv(filepath)
+    fig.update_layout(
+        template="plotly_white",
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
     
-    time_values = sorted(df[time_column].unique().tolist())
-    return jsonify({"success": True, "time_values": time_values})
+    return jsonify({"plot": fig.to_json()})
