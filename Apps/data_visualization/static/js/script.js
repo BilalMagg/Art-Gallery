@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Data source change handler
     dataSource.addEventListener('change', async function() {
         resetForm();
-        
+        console.log("source")
         if (this.value === 'upload') {
             uploadSection.classList.remove('hidden');
             presetControls.classList.add('hidden');
