@@ -82,8 +82,7 @@ def add_to_gallery():
         return jsonify({"message": "No filename provided"}), 400
 
     src_path = os.path.join('Apps/image_manipulation/static/filtered', filename)
-    dest_folder = "
-    static/gallery"
+    dest_folder = "static/gallery"
     os.makedirs(dest_folder, exist_ok=True)  # Ensure gallery folder exists
 
     # Check if file already exists in the gallery
