@@ -3,108 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Visualization - Grecian Gallery</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <link rel="stylesheet" href="{{ url_for('visualization.static', filename='css/style.css') }}">
+    <title>3D Globe Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #graph {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
 </head>
 <body>
-    <nav>
-        <div class="nav-content">
-            <a href="/" class="logo">
-                <svg viewBox="0 0 24 24" class="logo-icon">
-                    <circle cx="12" cy="12" r="10" fill="currentColor"/>
-                </svg>
-                <span>Grecian Gallery</span>
-            </a>
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/shapes">Shapes</a>
-                <a href="/visualization">Data</a>
-                <a href="/images">Images</a>
-                <a href="/audio">Audio</a>
-                <a href="/ml">ML</a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container">
-        <h1>Data Visualization</h1>
-        <p class="subtitle">Transform your data into interactive visualizations</p>
-
-        <div class="card upload-section">
-            <form id="uploadForm">
-                <!-- Data Source Selection -->
-                <div class="form-group">
-                    <label for="dataSource">Choose Data Source</label>
-                    <select id="dataSource" required>
-                        <option value="preset">Use Preset Data (Internet Usage Dataset)</option>
-                        <option value="upload">Upload Your Own Dataset</option>
-                    </select>
-                </div>
-
-                <!-- File Upload Section -->
-                <div id="uploadSection" class="hidden">
-                    <div class="form-group">
-                        <label for="fileInput">Upload Dataset (CSV)</label>
-                        <input type="file" id="fileInput" accept=".csv">
-                    </div>
-                </div>
-
-                <!-- Preset Data Controls -->
-                <div id="presetControls" class="hidden">
-                    <div class="form-group">
-                        <label for="yearSelect">Select Year</label>
-                        <select id="yearSelect" required></select>
-                    </div>
-                </div>
-
-                <!-- Visualization Configuration -->
-                <div id="configSection" class="hidden">
-                    <div class="form-group">
-                        <label for="vizType">Visualization Type</label>
-                        <select id="vizType" required></select>
-                    </div>
-
-                    <!-- Custom Upload Controls -->
-                    <div id="customControls" class="hidden">
-                        <div class="form-group">
-                            <label for="xAxis">X Axis</label>
-                            <select id="xAxis" required></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="yAxis">Y Axis</label>
-                            <select id="yAxis" required></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="colorBy">Color By (Optional)</label>
-                            <select id="colorBy"></select>
-                        </div>
-                    </div>
-
-                    <!-- Preset Data Controls -->
-                    <div id="presetVizControls" class="hidden">
-                        <div class="form-group">
-                            <label for="metricSelect">Select Metric</label>
-                            <select id="metricSelect">
-                                <option value="internet">Internet Users (%)</option>
-                                <option value="cellular">Cellular Subscription</option>
-                                <option value="broadband">Broadband Subscription</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn generate-btn">
-                        Generate Visualization
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div id="visualization" class="visualization-container hidden">
-            <div id="plotOutput"></div>
-        </div>
+    <div id="graph">
+        <!-- Insert Plotly Graph Here -->
+        {{ graph_html | safe }}
     </div>
-
-    <script src="{{ url_for('visualization.static', filename='js/script.js') }}"></script>
 </body>
 </html>

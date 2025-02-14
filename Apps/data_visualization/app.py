@@ -10,130 +10,43 @@ data_bp = Blueprint("visualization", __name__, template_folder="templates", stat
 UPLOAD_FOLDER = "Apps/data_visualization/static/uploads"
 ALLOWED_EXTENSIONS = {'csv'}
 
-# Load preset data
-PRESET_DATA = pd.read_csv("Apps\data_visualization\static\data\Final.csv")
-AVAILABLE_YEARS = sorted(PRESET_DATA['Year'].unique().tolist())
+# Load Dataset
+df = pd.read_csv("Apps/data_visualization/static/data/Final.csv")  # Change to your actual dataset filename
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# Filter Data for Year 2020
+df_2020 = df[df["Year"] == 2020]
 
-@data_bp.route('/', methods=['GET'])
-def index():
-    return render_template('index_data.html')
+# Function to generate the 3D globe visualization
+def create_3d_globe_graph():
+    # Prepare data for the 3D globe visualization (we'll use the 'Code' for the country codes)
+    locations = df_2020['Code'].tolist()
+    internet_users = df_2020['Internet Users(%)'].tolist()  # You can use other data as needed
 
-@data_bp.route('/get_preset_years', methods=['GET'])
-def get_preset_years():
-    return jsonify({"years": AVAILABLE_YEARS})
+    # Create a choropleth map on a 3D globe using Plotly
+    fig = go.Figure(go.Choropleth(
+        locations=locations,
+        z=internet_users,
+        hoverinfo='location+z',
+        colorbar_title="Internet Users (%)",
+        colorscale="greens",  # Customize colors if needed
+    ))
 
-@data_bp.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file part"}), 400
-    
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
-        
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(filepath)
-        
-        df = pd.read_csv(filepath)
-        columns = df.columns.tolist()
-        
-        numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns.tolist()
-        categorical_columns = df.select_dtypes(include=['object']).columns.tolist()
-        
-        return jsonify({
-            "filename": filename,
-            "columns": columns,
-            "numeric_columns": numeric_columns,
-            "categorical_columns": categorical_columns
-        })
-    
-    return jsonify({"error": "File type not allowed"}), 400
-
-@data_bp.route('/visualize', methods=['POST'])
-def visualize():
-    data = request.json
-    viz_type = data.get('viz_type')
-    data_source = data.get('data_source')
-    
-    if data_source == 'preset':
-        year = int(data.get('year'))
-        metric = data.get('metric', 'internet')
-        df = PRESET_DATA[PRESET_DATA['Year'] == year]
-        
-        if viz_type == 'globe':
-            metric_map = {
-                'internet': 'Internet Users(%)',
-                'cellular': 'Cellular Subscription',
-                'broadband': 'Broadband Subscription'
-            }
-            metric_col = metric_map[metric]
-            
-            fig = go.Figure(data=go.Choropleth(
-                locations=df['Code'],
-                z=df[metric_col],
-                text=df['Entity'],
-                colorscale='Viridis',
-                colorbar_title=metric_col
-            ))
-            fig.update_layout(
-                geo=dict(showland=True, showcountries=True, projection_type='orthographic'),
-                title=f"{metric_col} by Country ({year})"
-            )
-            
-        elif viz_type == 'bar':
-            metric_col = 'Internet Users(%)' if metric == 'internet' else metric
-            df_sorted = df.nlargest(10, metric_col)
-            fig = px.bar(
-                df_sorted,
-                x='Entity',
-                y=metric_col,
-                title=f"Top 10 Countries by {metric_col} ({year})"
-            )
-            
-        elif viz_type == 'line':
-            # For line chart, we'll use all years
-            df_line = PRESET_DATA.copy()
-            fig = px.line(
-                df_line,
-                x='Year',
-                y='Internet Users(%)',
-                color='Entity',
-                title='Internet Usage Trends Over Time'
-            )
-            
-        elif viz_type == 'scatter':
-            fig = px.scatter(
-                df,
-                x='Cellular Subscription',
-                y='Internet Users(%)',
-                text='Entity',
-                title=f'Internet vs Cellular Usage ({year})'
-            )
-            
-    else:  # Custom upload
-        filename = data.get('filename')
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        df = pd.read_csv(filepath)
-        
-        if viz_type == 'bar':
-            fig = px.bar(
-                df,
-                x=data['x_column'],
-                y=data['y_column'],
-                color=data.get('color_column'),
-                title=f"Bar Chart of {data['y_column']} by {data['x_column']}"
-            )
-        # Add other visualization types for custom uploads as needed
-    
-    fig.update_layout(
-        template="plotly_white",
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)'
+    # Update the layout to use a 3D globe
+    fig.update_geos(
+        projection_type="orthographic",  # Orthographic projection for globe effect
+        landcolor="rgb(243, 243, 243)",  # Light gray land color
+        oceancolor="rgb(0, 123, 255)",  # Blue ocean color
+        visible=False  # Hide coastlines and country borders for a cleaner look
     )
-    
-    return jsonify({"plot": fig.to_json()})
+    fig.update_layout(
+        title="Internet Users (2020) on 3D Globe",
+        geo=dict(showland=True, landcolor="rgb(243, 243, 243)", showcoastlines=True,coastlinecolor="black")
+    )
+
+    # Return the HTML for the plot
+    return fig.to_html(full_html=False)
+
+@data_bp.route('/')
+def index():
+    graph_html = create_3d_globe_graph()
+    return render_template('index_data.html', graph_html=graph_html)
