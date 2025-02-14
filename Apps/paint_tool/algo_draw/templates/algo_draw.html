@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Generative Art - Multiple Shapes & Fractals</title>
+</head>
+<body>
+  <h1>Generative Art with Multiple Shapes & Fractals</h1>
+
+  <!-- Display generated image if available -->
+  {% if image_file %}
+    <p>Generated Image File: {{ image_file }}</p>
+    <img src="{{ url_for('static', filename=image_file) }}" 
+         alt="Generated Image"
+         style="border:1px solid #000; width:600px; height:auto;">
+  {% else %}
+    <p>No image generated yet.</p>
+  {% endif %}
+
+  <hr>
+  <!-- Form for user choices -->
+  <form method="POST">
+    <!-- SHAPES SECTION -->
+    <h2>Shapes</h2>
+    <p>Select which shapes you want to draw:</p>
+    <label>
+      <input type="checkbox" name="shapes" value="circle"> Circle
+    </label>
+    <label>
+      <input type="checkbox" name="shapes" value="square"> Square
+    </label>
+    <label>
+      <input type="checkbox" name="shapes" value="triangle"> Triangle
+    </label>
+    <label>
+      <input type="checkbox" name="shapes" value="star"> Star
+    </label>
+
+    <p>
+      <label for="shape_count">Number of each shape:</label>
+      <input type="number" name="shape_count" min="1" max="50" value="5">
+    </p>
+
+    <!-- FRACTALS SECTION -->
+    <h2>Fractals</h2>
+    <p>Select which fractals you want to include:</p>
+    <label>
+      <input type="checkbox" name="fractals" value="tree"> Tree
+    </label>
+    <label>
+      <input type="checkbox" name="fractals" value="sierpinski"> Sierpinski
+    </label>
+    <label>
+      <input type="checkbox" name="fractals" value="koch"> Koch
+    </label>
+    <label>
+      <input type="checkbox" name="fractals" value="squares"> Fractal Squares
+    </label>
+    <label>
+      <input type="checkbox" name="fractals" value="circles"> Fractal Circles
+    </label>
+
+    <p>
+      <label for="fractal_count">Number of each fractal:</label>
+      <input type="number" name="fractal_count" min="0" max="10" value="1">
+    </p>
+
+    <!-- COLOR SECTION -->
+    <h2>Color</h2>
+    <p>
+      <label for="color">Color (or random):</label>
+      <select name="color">
+        <option value="red">Red</option>
+        <option value="blue">Blue</option>
+        <option value="green">Green</option>
+        <option value="random">Random</option>
+      </select>
+    </p>
+
+    <button type="submit">Generate</button>
+  </form>
+</body>
+</html>

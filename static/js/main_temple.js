@@ -9,7 +9,7 @@ function init() {
 
   // Camera Setup
   camera = new THREE.PerspectiveCamera(
-    40,
+    30,
     window.innerWidth / window.innerHeight,
     0.1,
     100
@@ -91,7 +91,7 @@ function init() {
     // ===== Position the model =====
     // For example, move it up or sideways by changing these:
     model.position.y += 5;   // or 2, 5, etc.
-    model.position.x += -4.6;   // or -3, etc. 
+    //model.position.x += -4.6;   // or -3, etc. 
 
     modelGroup.add(model);
 
